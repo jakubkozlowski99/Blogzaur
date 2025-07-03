@@ -1,4 +1,5 @@
-﻿using Blogzaur.Application.Services;
+﻿using Blogzaur.Application.BlogEntry;
+using Blogzaur.Application.Services;
 using Blogzaur.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ namespace Blogzaur.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(BlogEntry blogEntry)
+        public async Task<IActionResult> Create(BlogEntryDto blogEntryDto)
         {
-            await _blogEntryService.Create(blogEntry);
+            await _blogEntryService.Create(blogEntryDto);
             return RedirectToAction(nameof(Create));
         }
     }

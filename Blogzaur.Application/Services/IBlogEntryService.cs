@@ -1,9 +1,10 @@
-﻿using Blogzaur.Domain.Entities;
+﻿using Blogzaur.Application.BlogEntry;
+using Blogzaur.Domain.Entities;
 
 namespace Blogzaur.Application.Services
 {
     public interface IBlogEntryService
     {
-        Task Create(BlogEntry blogEntry);
+        Task Create(BlogEntryDto blogEntryDto);
     }
 }

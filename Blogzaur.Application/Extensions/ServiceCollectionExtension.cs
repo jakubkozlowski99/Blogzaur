@@ -1,4 +1,5 @@
-﻿using Blogzaur.Application.Services;
+﻿using Blogzaur.Application.Mappings;
+using Blogzaur.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace Blogzaur.Application.Extensions
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IBlogEntryService, BlogEntryService>();
+
+            services.AddAutoMapper(typeof(BlogEntryMappingProfile));
         }
     }
 }
