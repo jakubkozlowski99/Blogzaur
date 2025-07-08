@@ -1,8 +1,8 @@
-﻿using Blogzaur.Application.BlogEntry;
+﻿using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.Mappings;
-using Blogzaur.Application.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,11 +16,11 @@ namespace Blogzaur.Application.Extensions
     {
         public static void AddApplication(this IServiceCollection services)
         {
-            services.AddScoped<IBlogEntryService, BlogEntryService>();
+            services.AddMediatR(typeof(CreateBlogEntryCommand));
 
             services.AddAutoMapper(typeof(BlogEntryMappingProfile));
 
-            services.AddValidatorsFromAssemblyContaining<BlogEntryDtoValidator>()
+            services.AddValidatorsFromAssemblyContaining<CreateBlogEntryCommandValidator>()
                 .AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
 

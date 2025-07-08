@@ -1,21 +1,22 @@
 ﻿using Blogzaur.Application.BlogEntry;
-using Blogzaur.Application.Services;
-using Blogzaur.Domain.Entities;
+using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
+using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blogzaur.MVC.Controllers
 {
     public class BlogEntryController : Controller
     {
-        private readonly IBlogEntryService _blogEntryService;
-        public BlogEntryController(IBlogEntryService blogEntryService)
+        private readonly IMediator _mediator;
+        public BlogEntryController(IMediator mediator)
         {
-            _blogEntryService = blogEntryService;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> List()
         {
-            var blogEntries = await _blogEntryService.GetAll();
+            var blogEntries = await _mediator.Send(new GetAllBlogEntriesQuery());
             return View(blogEntries);
         }
 
@@ -25,14 +26,14 @@ namespace Blogzaur.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(BlogEntryDto blogEntryDto)
+        public async Task<IActionResult> Create(CreateBlogEntryCommand command)
         {
             if (!ModelState.IsValid)
             {
-                return View(blogEntryDto);
+                return View(command);
             }
 
-            await _blogEntryService.Create(blogEntryDto);
+            await _mediator.Send(command);
             return RedirectToAction(nameof(List));
         }
     }

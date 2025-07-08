@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blogzaur.Application.BlogEntry
+namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 {
-    public class BlogEntryDtoValidator : AbstractValidator<BlogEntryDto>
+    public class CreateBlogEntryCommandValidator : AbstractValidator<CreateBlogEntryCommand>
     {
-        public BlogEntryDtoValidator()
+        public CreateBlogEntryCommandValidator()
         {
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title is required.")
