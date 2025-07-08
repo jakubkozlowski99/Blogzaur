@@ -9,6 +9,8 @@ namespace Blogzaur.Application.Mappings
         public BlogEntryMappingProfile()
         {
             CreateMap<BlogEntryDto, Domain.Entities.BlogEntry>();
+
+            CreateMap<Domain.Entities.BlogEntry, BlogEntryDto>();
         }
     }
 }

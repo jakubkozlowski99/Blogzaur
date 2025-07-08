@@ -26,5 +26,13 @@ namespace Blogzaur.Application.Services
 
             await _blogEntryRepository.Create(blogEntry);
         }
+
+        public async Task<List<BlogEntryDto>> GetAll()
+        {
+            var blogEntries = await _blogEntryRepository.GetAll();
+            var dtos = _mapper.Map<List<BlogEntryDto>>(blogEntries);
+
+            return dtos;
+        }
     }
 }

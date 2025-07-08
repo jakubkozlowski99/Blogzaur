@@ -6,5 +6,6 @@ namespace Blogzaur.Application.Services
     public interface IBlogEntryService
     {
         Task Create(BlogEntryDto blogEntryDto);
+        Task<List<BlogEntryDto>> GetAll();
     }
 }

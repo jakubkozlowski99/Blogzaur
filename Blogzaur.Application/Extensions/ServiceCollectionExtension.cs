@@ -1,5 +1,8 @@
-﻿using Blogzaur.Application.Mappings;
+﻿using Blogzaur.Application.BlogEntry;
+using Blogzaur.Application.Mappings;
 using Blogzaur.Application.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -16,6 +19,11 @@ namespace Blogzaur.Application.Extensions
             services.AddScoped<IBlogEntryService, BlogEntryService>();
 
             services.AddAutoMapper(typeof(BlogEntryMappingProfile));
+
+            services.AddValidatorsFromAssemblyContaining<BlogEntryDtoValidator>()
+                .AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+
         }
     }
 }

@@ -13,6 +13,12 @@ namespace Blogzaur.MVC.Controllers
             _blogEntryService = blogEntryService;
         }
 
+        public async Task<IActionResult> List()
+        {
+            var blogEntries = await _blogEntryService.GetAll();
+            return View(blogEntries);
+        }
+
         public IActionResult Create()
         {
             return View();
@@ -21,8 +27,13 @@ namespace Blogzaur.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BlogEntryDto blogEntryDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(blogEntryDto);
+            }
+
             await _blogEntryService.Create(blogEntryDto);
-            return RedirectToAction(nameof(Create));
+            return RedirectToAction(nameof(List));
         }
     }
 }

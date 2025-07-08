@@ -1,11 +1,7 @@
 ﻿using Blogzaur.Domain.Entities;
 using Blogzaur.Domain.Interfaces;
 using Blogzaur.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blogzaur.Infrastructure.Repositories
 {
@@ -22,5 +18,10 @@ namespace Blogzaur.Infrastructure.Repositories
             _dbContext.Add(blogEntry);
             await _dbContext.SaveChangesAsync();
         }
+
+        public Task<List<BlogEntry>> GetAll()
+            => _dbContext.BlogEntries
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
     }
 }

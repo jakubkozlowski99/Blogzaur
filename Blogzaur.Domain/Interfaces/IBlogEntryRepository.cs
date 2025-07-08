@@ -10,5 +10,6 @@ namespace Blogzaur.Domain.Interfaces
     public interface IBlogEntryRepository
     {
         Task Create(BlogEntry blogEntry);
+        Task<List<BlogEntry>> GetAll();
     }
 }
