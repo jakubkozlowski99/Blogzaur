@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries
 {
-    public class GetAllBlogEntriesHandler : IRequestHandler<GetAllBlogEntriesQuery, List<BlogEntryDto>>
+    public class GetAllBlogEntriesQueryHandler : IRequestHandler<GetAllBlogEntriesQuery, List<BlogEntryDto>>
     {
         private readonly IBlogEntryRepository _blogEntryRepository;
         private readonly IMapper _mapper;
-        public GetAllBlogEntriesHandler(IBlogEntryRepository blogEntryRepository, IMapper mapper)
+        public GetAllBlogEntriesQueryHandler(IBlogEntryRepository blogEntryRepository, IMapper mapper)
         {
             _blogEntryRepository = blogEntryRepository;
             _mapper = mapper;

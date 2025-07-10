@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blogzaur.Application.BlogEntry;
+using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Domain.Entities;
 
 namespace Blogzaur.Application.Mappings
@@ -11,6 +12,8 @@ namespace Blogzaur.Application.Mappings
             CreateMap<BlogEntryDto, Domain.Entities.BlogEntry>();
 
             CreateMap<Domain.Entities.BlogEntry, BlogEntryDto>();
+
+            CreateMap<BlogEntryDto, EditBlogEntryCommand>();
         }
     }
 }

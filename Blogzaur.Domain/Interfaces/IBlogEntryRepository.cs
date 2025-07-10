@@ -9,7 +9,9 @@ namespace Blogzaur.Domain.Interfaces
 {
     public interface IBlogEntryRepository
     {
+        Task Commit();
         Task Create(BlogEntry blogEntry);
         Task<List<BlogEntry>> GetAll();
+        Task<BlogEntry> GetById(int id);
     }
 }

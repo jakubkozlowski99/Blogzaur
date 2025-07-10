@@ -1,0 +1,30 @@
+﻿@model Blogzaur.Application.BlogEntry.BlogEntryDto
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>BlogEntryDto</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a asp-controller="BlogEntry" asp-action="List">Back to List</a>
+</div>

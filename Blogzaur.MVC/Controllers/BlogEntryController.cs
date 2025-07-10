@@ -1,6 +1,9 @@
-﻿using Blogzaur.Application.BlogEntry;
+﻿using AutoMapper;
+using Blogzaur.Application.BlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
+using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
+using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +12,11 @@ namespace Blogzaur.MVC.Controllers
     public class BlogEntryController : Controller
     {
         private readonly IMediator _mediator;
-        public BlogEntryController(IMediator mediator)
+        private readonly IMapper _mapper;
+        public BlogEntryController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> List()
@@ -23,6 +28,33 @@ namespace Blogzaur.MVC.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var dto = await _mediator.Send(new GetBlogEntryByIdQuery(id));
+            return View(dto);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var dto = await _mediator.Send(new GetBlogEntryByIdQuery(id));
+
+            EditBlogEntryCommand model = _mapper.Map<EditBlogEntryCommand>(dto);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditBlogEntryCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(command);
+            }
+
+            await _mediator.Send(command);
+            return RedirectToAction(nameof(List));
         }
 
         [HttpPost]
