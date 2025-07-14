@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,18 @@ using System.Threading.Tasks;
 
 namespace Blogzaur.Infrastructure.Persistence
 {
-    public class BlogzaurDbContext : DbContext
+    public class BlogzaurDbContext : IdentityDbContext
     {
         public BlogzaurDbContext(DbContextOptions<BlogzaurDbContext> options)
             : base(options)
         {
 
         }
-
-        public DbSet<Domain.Entities.User> Users { get; set; }
         public DbSet<Domain.Entities.BlogEntry> BlogEntries { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
     }
 }
