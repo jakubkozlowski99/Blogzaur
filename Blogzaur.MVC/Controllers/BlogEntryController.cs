@@ -5,6 +5,7 @@ using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blogzaur.MVC.Controllers
@@ -25,6 +26,7 @@ namespace Blogzaur.MVC.Controllers
             return View(blogEntries);
         }
 
+        [Authorize(Roles = "Owner")]
         public IActionResult Create()
         {
             return View();
@@ -39,6 +41,11 @@ namespace Blogzaur.MVC.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _mediator.Send(new GetBlogEntryByIdQuery(id));
+
+            if (!dto.isEditable)
+            {
+                return RedirectToAction("NoAccess", "Home");
+            }
 
             EditBlogEntryCommand model = _mapper.Map<EditBlogEntryCommand>(dto);
 
@@ -58,6 +65,7 @@ namespace Blogzaur.MVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Create(CreateBlogEntryCommand command)
         {
             if (!ModelState.IsValid)

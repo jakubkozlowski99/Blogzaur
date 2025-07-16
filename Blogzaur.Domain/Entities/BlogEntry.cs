@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace Blogzaur.Domain.Entities
         public int Id { get; set; }
         public string Title { get; set; } = default!;
         public string Content { get; set; } = default!;
+        public string? AuthorId { get; set; }
+        public IdentityUser? Author { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }

@@ -16,6 +16,7 @@ namespace Blogzaur.Infrastructure.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("BlogzaurDb")));
 
             services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<BlogzaurDbContext>();
 
             services.AddScoped<IBlogEntryRepository, BlogEntryRepository>();

@@ -31,8 +31,11 @@
                 @Html.DisplayFor(modelItem => item.Content)
             </td>
             <td>
+                @if (item.isEditable)
+                {
                     <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                }
+                <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@item.Id">Details</a>
                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
             </td>
         </tr>

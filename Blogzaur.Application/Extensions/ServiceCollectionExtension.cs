@@ -1,4 +1,6 @@
-﻿using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
+﻿using AutoMapper;
+using Blogzaur.Application.ApplicationUser;
+using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.Mappings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -16,9 +18,16 @@ namespace Blogzaur.Application.Extensions
     {
         public static void AddApplication(this IServiceCollection services)
         {
+            services.AddScoped<IUserContext, UserContext>();
             services.AddMediatR(typeof(CreateBlogEntryCommand));
 
-            services.AddAutoMapper(typeof(BlogEntryMappingProfile));
+            services.AddScoped(provider => new MapperConfiguration(cfg => 
+                {
+                    var scope = provider.CreateScope();
+                    var userContext = scope.ServiceProvider.GetRequiredService<IUserContext>();
+
+                    cfg.AddProfile(new BlogEntryMappingProfile(userContext));
+                }).CreateMapper());
 
             services.AddValidatorsFromAssemblyContaining<CreateBlogEntryCommandValidator>()
                 .AddFluentValidationAutoValidation()

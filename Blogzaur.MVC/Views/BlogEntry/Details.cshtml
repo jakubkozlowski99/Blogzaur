@@ -25,6 +25,9 @@
     </dl>
 </div>
 <div>
-    <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    @if(Model.isEditable)
+    {
+        <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    }
     <a asp-controller="BlogEntry" asp-action="List">Back to List</a>
 </div>
