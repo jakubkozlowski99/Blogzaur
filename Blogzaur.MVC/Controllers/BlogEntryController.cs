@@ -76,7 +76,7 @@ namespace Blogzaur.MVC.Controllers
                 return View(command);
             }
 
-            //await _mediator.Send(command);
+            await _mediator.Send(command);
 
             this.SetNotification("success", "Blog entry created successfully!");
 
