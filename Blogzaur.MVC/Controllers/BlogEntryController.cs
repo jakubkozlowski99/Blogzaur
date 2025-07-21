@@ -4,9 +4,12 @@ using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
+using Blogzaur.MVC.Extensions;
+using Blogzaur.MVC.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Blogzaur.MVC.Controllers
 {
@@ -73,7 +76,10 @@ namespace Blogzaur.MVC.Controllers
                 return View(command);
             }
 
-            await _mediator.Send(command);
+            //await _mediator.Send(command);
+
+            this.SetNotification("success", "Blog entry created successfully!");
+
             return RedirectToAction(nameof(List));
         }
     }
