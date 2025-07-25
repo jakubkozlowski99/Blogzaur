@@ -9,7 +9,6 @@ namespace Blogzaur.Application.Mappings
 {
     public class BlogEntryMappingProfile : Profile
     {
-        private readonly IUserContext _userContext;
         public BlogEntryMappingProfile(IUserContext userContext)
         {
             var user = userContext.GetCurrentUser();
