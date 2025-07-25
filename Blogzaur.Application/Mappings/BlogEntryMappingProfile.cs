@@ -2,6 +2,7 @@
 using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Application.BlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
+using Blogzaur.Application.Comment;
 using Blogzaur.Domain.Entities;
 
 namespace Blogzaur.Application.Mappings
@@ -19,6 +20,9 @@ namespace Blogzaur.Application.Mappings
                 .ForMember(dto => dto.isEditable, opt => opt.MapFrom(src => user != null && (src.AuthorId == user.Id || user.IsInRole("Moderator"))));
 
             CreateMap<BlogEntryDto, EditBlogEntryCommand>();
+
+            CreateMap<CommentDto, Domain.Entities.Comment>()
+                .ReverseMap();
         }
     }
 }

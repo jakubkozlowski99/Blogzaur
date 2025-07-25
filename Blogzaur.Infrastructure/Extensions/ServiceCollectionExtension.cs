@@ -20,6 +20,7 @@ namespace Blogzaur.Infrastructure.Extensions
                 .AddEntityFrameworkStores<BlogzaurDbContext>();
 
             services.AddScoped<IBlogEntryRepository, BlogEntryRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
         }
     }
 }
