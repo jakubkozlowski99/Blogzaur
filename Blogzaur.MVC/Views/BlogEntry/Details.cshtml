@@ -1,4 +1,5 @@
-﻿@model Blogzaur.Application.BlogEntry.BlogEntryDto
+﻿@using Blogzaur.Application.Comment.Commands.CreateComment
+@model Blogzaur.Application.BlogEntry.BlogEntryDto
 
 @{
     ViewData["Title"] = "Details";
@@ -25,6 +26,7 @@
     </dl>
 </div>
 <div>
+    <partial name="_CreateComment" model="new CreateCommentCommand() {BlogEntryId = Model.Id}" />
     @if(Model.isEditable)
     {
         <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>

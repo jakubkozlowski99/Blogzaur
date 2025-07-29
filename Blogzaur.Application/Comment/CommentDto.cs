@@ -9,6 +9,7 @@ namespace Blogzaur.Application.Comment
     public class CommentDto
     {
         public string Content { get; set; } = default!;
+        public int AuthorId { get; set; }
         public bool isHidden { get; set; } = false;
     }
 }

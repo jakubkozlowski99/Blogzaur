@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
+using Blogzaur.Application.Comment.Commands.CreateComment;
 using Blogzaur.Application.Mappings;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -27,12 +28,16 @@ namespace Blogzaur.Application.Extensions
                     var userContext = scope.ServiceProvider.GetRequiredService<IUserContext>();
 
                     cfg.AddProfile(new BlogEntryMappingProfile(userContext));
+                    cfg.AddProfile(new CommentMappingProfile());
                 }).CreateMapper());
 
             services.AddValidatorsFromAssemblyContaining<CreateBlogEntryCommandValidator>()
                 .AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
 
+            services.AddValidatorsFromAssemblyContaining<CreateCommentCommandValidator>()
+                .AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
         }
     }
 }

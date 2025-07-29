@@ -19,9 +19,6 @@ namespace Blogzaur.Application.Mappings
                 .ForMember(dto => dto.isEditable, opt => opt.MapFrom(src => user != null && (src.AuthorId == user.Id || user.IsInRole("Moderator"))));
 
             CreateMap<BlogEntryDto, EditBlogEntryCommand>();
-
-            CreateMap<CommentDto, Domain.Entities.Comment>()
-                .ReverseMap();
         }
     }
 }
