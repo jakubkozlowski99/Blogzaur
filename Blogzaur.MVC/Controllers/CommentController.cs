@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.Comment.Commands.CreateComment;
+using Blogzaur.Application.Comment.Queries.GetCommentsByBlogEntryId;
 using Blogzaur.MVC.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +29,19 @@ namespace Blogzaur.MVC.Controllers
             await _mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCommentsByBlogEntryId(int blogEntryId)
+        {
+            if (blogEntryId <= 0)
+            {
+                return BadRequest("Invalid blog entry ID.");
+            }
+
+            var comments = await _mediator.Send(new GetCommentsByBlogEntryIdQuery(blogEntryId));
+
+            return Ok(comments);
         }
     }
 }

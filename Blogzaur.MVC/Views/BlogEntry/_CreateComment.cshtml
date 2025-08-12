@@ -2,15 +2,17 @@
 
 @model CreateCommentCommand
 
-<form action="/Comment/Create" method="post">
-    <div class="form-group mb-3">
-        <input asp-for="BlogEntryId" class="form-control" type="hidden" />
-        <label class="control-label" for="Content">Content</label>
-        <input type="text" class="form-control" asp-for="Content" />
-        <span asp-validation-for="Content" class="text-danger"></span>
-        <input type="submit" class="btn btn-primary" value="Add comment" />
-    </div>
-</form>
+<div id="createComment">
+    <form action="/Comment/Create" method="post">
+        <div class="form-group mb-3">
+            <input asp-for="BlogEntryId" class="form-control" type="hidden" />
+            <label class="control-label" for="Content">Content</label>
+            <input type="text" class="form-control" asp-for="Content" />
+            <span asp-validation-for="Content" class="text-danger"></span>
+            <input type="submit" class="btn btn-primary" value="Add comment" />
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     @{
