@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,21 @@ namespace Blogzaur.Application.ApplicationUser
 {
     public interface IUserContext
     {
-        CurrentUser? GetCurrentUser();
+        User? GetCurrentUser();
+        User? GetUserById(string id);
     }
 
     public class UserContext : IUserContext
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserContext(IHttpContextAccessor httpContextAccessor)
+        private readonly UserManager<IdentityUser> _userManager;
+        public UserContext(IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
         {
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
-        public CurrentUser? GetCurrentUser()
+        public User? GetCurrentUser()
         {
             var user = _httpContextAccessor.HttpContext?.User;
 
@@ -36,11 +40,24 @@ namespace Blogzaur.Application.ApplicationUser
             }
 
             var id = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+            var username = user.FindFirst(c => c.Type == ClaimTypes.Name)!.Value;
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
             var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
 
-            return new CurrentUser(id, email, roles);
+            return new User(id, username, email, roles);
         }
 
+        public User? GetUserById(string id)
+        {
+            var user = _userManager.FindByIdAsync(id).Result;
+
+            if (user == null)
+            {
+                return new User("0", "User does not exist", "", new List<string>());
+            }
+
+            var roles = _userManager.GetRolesAsync(user).Result;
+            return new User(user.Id, user.UserName!, user.Email!, roles);
+        }
     }
 }

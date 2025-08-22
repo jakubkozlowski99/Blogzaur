@@ -27,10 +27,24 @@
 </div>
 
 <div>
+    <h3>Add a comment:</h3>
     <partial name="_CreateComment" model="new CreateCommentCommand() {BlogEntryId = Model.Id}" />
     @if(Model.isEditable)
     {
         <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     }
+
+    <h3>Comments:</h3>
+
+    <div id="comments" class="row" data-blog-id="@Model.Id"></div>
+
     <a asp-controller="BlogEntry" asp-action="List">Back to List</a>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/BlogEntry/Details.js"></script>
+}

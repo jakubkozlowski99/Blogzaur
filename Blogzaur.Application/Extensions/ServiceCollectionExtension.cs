@@ -28,7 +28,7 @@ namespace Blogzaur.Application.Extensions
                     var userContext = scope.ServiceProvider.GetRequiredService<IUserContext>();
 
                     cfg.AddProfile(new BlogEntryMappingProfile(userContext));
-                    cfg.AddProfile(new CommentMappingProfile());
+                    cfg.AddProfile(new CommentMappingProfile(userContext));
                 }).CreateMapper());
 
             services.AddValidatorsFromAssemblyContaining<CreateBlogEntryCommandValidator>()

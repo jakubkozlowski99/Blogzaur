@@ -32,6 +32,7 @@ namespace Blogzaur.MVC.Controllers
         }
 
         [HttpGet]
+        [Route("Comment/GetComments/{blogEntryId}")]
         public async Task<IActionResult> GetCommentsByBlogEntryId(int blogEntryId)
         {
             if (blogEntryId <= 0)

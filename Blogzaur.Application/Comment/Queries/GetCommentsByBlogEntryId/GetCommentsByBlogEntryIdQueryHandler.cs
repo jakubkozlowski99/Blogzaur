@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Domain.Interfaces;
 using MediatR;
 using System;
@@ -13,7 +14,7 @@ namespace Blogzaur.Application.Comment.Queries.GetCommentsByBlogEntryId
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
-        public GetCommentsByBlogEntryIdQueryHandler(ICommentRepository commentRepository, IMapper mapper)
+        public GetCommentsByBlogEntryIdQueryHandler(ICommentRepository commentRepository, IMapper mapper, IUserContext userContext)
         {
             _commentRepository = commentRepository;
             _mapper = mapper;

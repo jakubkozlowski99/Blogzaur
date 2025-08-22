@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Application.Comment;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,11 @@ namespace Blogzaur.Application.Mappings
 {
     public class CommentMappingProfile : Profile
     {
-        public CommentMappingProfile()
+        public CommentMappingProfile(IUserContext userContext)
         {
             CreateMap<CommentDto, Domain.Entities.Comment>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(dto => dto.AuthorName, opt => opt.MapFrom(src => userContext.GetUserById(src.AuthorId).Username));
         }
     }
 }
