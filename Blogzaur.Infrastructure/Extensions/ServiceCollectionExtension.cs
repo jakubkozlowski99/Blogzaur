@@ -1,4 +1,5 @@
 ﻿using Blogzaur.Domain.Interfaces;
+using Blogzaur.Infrastructure.Identity;
 using Blogzaur.Infrastructure.Persistence;
 using Blogzaur.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +18,8 @@ namespace Blogzaur.Infrastructure.Extensions
 
             services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<BlogzaurDbContext>();
+                .AddEntityFrameworkStores<BlogzaurDbContext>()
+                .AddSignInManager<BlogzaurSignInManager>();
 
             services.AddScoped<IBlogEntryRepository, BlogEntryRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
