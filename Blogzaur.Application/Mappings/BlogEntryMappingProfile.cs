@@ -2,8 +2,6 @@
 using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Application.BlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
-using Blogzaur.Application.Comment;
-using Blogzaur.Domain.Entities;
 
 namespace Blogzaur.Application.Mappings
 {

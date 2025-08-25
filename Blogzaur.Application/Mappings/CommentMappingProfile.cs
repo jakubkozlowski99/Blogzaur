@@ -15,9 +15,8 @@ namespace Blogzaur.Application.Mappings
         {
             CreateMap<CommentDto, Domain.Entities.Comment>()
                 .ReverseMap()
-                .ForMember(dto => dto.AuthorName, opt => opt.MapFrom(src => userContext.GetUserById(src.AuthorId).Username));
-
-            //TODO: reformat created at date to more friendly format
+                .ForMember(dto => dto.AuthorName, opt => opt.MapFrom(src => userContext.GetUserById(src.AuthorId!)!.Username))
+                .ForMember(dto => dto.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("g")));
         }
     }
 }

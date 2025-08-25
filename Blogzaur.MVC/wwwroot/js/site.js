@@ -3,9 +3,15 @@
 
     for (const comment of comments) {
         container.append(
-            `<div class="card border-secondary mb-3" style="max-width: 18rem;">
-          <div class="card-header">${comment.authorName}</div>
-          <div class="card-header">${comment.createdAt}</div>
+            `<div class="card border-secondary mb-3">
+          <div class="card-header row">
+              <div>
+                ${comment.authorName},
+              </div>
+              <div>
+                ${comment.createdAt}
+              </div>
+          </div>
           <div class="card-body">
             <h5 class="card-title">${comment.content}</h5> 
           </div>

@@ -11,7 +11,7 @@ namespace Blogzaur.Application.Comment
         public string Content { get; set; } = default!;
         public string AuthorId { get; set; } = default!;
         public string AuthorName { get; set; } = default!;
-        public DateTime CreatedAt { get; set; }
+        public string CreatedAt { get; set; } = default!;
         public bool isHidden { get; set; } = false;
     }
 }
