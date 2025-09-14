@@ -1,23 +1,68 @@
 ﻿@using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 
 @model CreateBlogEntryCommand
-<h1>Create Blog Entry</h1>
 
-<hr />
+<head>
+    <link rel="stylesheet" href="~/css/create.css" asp-append-version="true" />
+</head>
 
-<div class="row">
-    <div class="col-md-4">
+<h1 class="margin-large" align="center">Create Blog Entry</h1>
+
+<div class="col-xs-1" align="center">
+    <div class="col-md-4 w-75">
         <form action="/BlogEntry/Create" method="post">
-            <div class="form-group mb-3">
-                <label class="control-label" for="Title">Title</label>
-                <input type="text" class="form-control" asp-for="Title"/>
+            <div class="form-group mb-3 w-50">
+                <input type="text" class="title-input form-control margin-medium" placeholder="Write your title here" asp-for="Title" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group mb-3">
+            @* <div class="form-group mb-3">
                 <label class="control-label" for="Content">Content</label>
                 <input type="text" class="form-control" asp-for="Content" />
                 <span asp-validation-for="Content" class="text-danger"></span>
+            </div> *@
+            <div class="main-content w-100">
+                <div class="text-editor-header">
+                    <button type="button" class="btn btn-editor" data-element="bold">
+                            <i class="fa fa-bold"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="italic">
+                            <i class="fa fa-italic"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="underline">
+                            <i class="fa fa-underline"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="insertUnorderedList">
+                            <i class="fa fa-list-ul"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="insertOrderedList">
+                            <i class="fa fa-list-ol"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="createLink">
+                            <i class="fa fa-link"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyLeft">
+                            <i class="fa fa-align-left"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyCenter">
+                            <i class="fa fa-align-center"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyRight">
+                            <i class="fa fa-align-right"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyFull">
+                            <i class="fa fa-align-justify"></i>
+                        </button>
+                    <button type="button" class="btn btn-editor" data-element="insertImage">
+                            <i class="fa fa-image"></i>
+                        </button>
+                </div>
+                <div class="form-group mb-3">
+                    <input type="hidden" asp-for="Content" />
+                    <div class="form-control content" contenteditable="true" data-text="Write your blog here"></div>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
             </div>
+
 
             <div class="form-group mb-3">
                 <input type="submit" class="btn btn-primary" value="Create" />
@@ -30,4 +75,5 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="https://use.fontawesome.com/a31a3f8384.js"></script>
 }

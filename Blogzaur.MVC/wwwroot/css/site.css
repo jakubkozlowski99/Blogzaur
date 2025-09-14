@@ -8,6 +8,10 @@ html {
   }
 }
 
+.btn{
+    background-color:coral !important;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -28,4 +32,81 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.margin-small {
+    margin: 10px;
+}
+
+.margin-medium {
+    margin: 20px;
+}
+
+.margin-large {
+    margin: 40px;
+}
+
+.no-side-margin {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.bottom-border {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+
+/* Navbar */
+
+.navbar {
+    box-shadow: 0 4px 8px -2px rgb(0 0 0 / 20%);
+    background-color: coral !important;
+    border-bottom: 1px solid lightgrey;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+/* Text editor main content*/
+.main-content {
+    width: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%), translateY(-50%);
+}
+
+/* Text editor header */
+
+.text-editor-header{
+    border-top-width: 1px;
+    padding: 5px;
+}
+
+    .text-editor-header .btn {
+        background-color: transparent;
+        margin-right: 5px;
+    }
+
+    /* Text editor content */
+
+    .content{
+        width:100%;
+        min-height: 400px;
+        padding: 20px;
+        margin-top: 10px;
+        border-width: 1px;
+        border-color: lightslategrey;
+    }
+
+.content:focus {
+    outline: none !important;
+    box-shadow: none;
+}
+
+[contentEditable=true]:empty:not(:focus):before {
+    content: attr(data-text);
+    opacity: 0.3;
 }
