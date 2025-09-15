@@ -11,7 +11,7 @@ namespace Blogzaur.Domain.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; } = default!;
-        public string Description { get; set; } = default!;
+        public string? Description { get; set; } = default!;
         public string Content { get; set; } = default!;
         public bool IsPublished { get; set; } = false;
         public string? AuthorId { get; set; }
