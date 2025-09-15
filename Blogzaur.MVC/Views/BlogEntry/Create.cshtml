@@ -56,10 +56,10 @@
                             <i class="fa fa-image"></i>
                         </button>
                 </div>
-                <div class="form-group mb-3">
-                    <input type="hidden" asp-for="Content" />
+                <div class="form-group mb-3">@* 
+                    <input type="hidden" asp-for="Content" /> *@
                     <div class="form-control content" contenteditable="true" data-text="Write your blog here"></div>
-                    <span asp-validation-for="Content" class="text-danger"></span>
+                    @* <span asp-validation-for="Content" class="text-danger"></span> *@
                 </div>
             </div>
 
@@ -76,4 +76,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="https://use.fontawesome.com/a31a3f8384.js"></script>
+    <script src="~/js/BlogEntry/Create.js"></script>
 }
