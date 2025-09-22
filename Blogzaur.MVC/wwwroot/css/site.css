@@ -2,6 +2,11 @@ html {
   font-size: 14px;
 }
 
+hr {
+    border: 2px solid coral;
+    border-radius: 5px;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -70,3 +75,25 @@ body {
     z-index: 1030;
 }
 
+
+textarea {
+    border: 1px solid lightslategrey !important;
+    resize: none;
+}
+
+textarea:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+textarea::placeholder {
+    opacity: 0.3 !important;
+}
+
+textarea:focus::placeholder {
+    color: transparent !important;
+}
+
+.small-header{
+    font-weight: bold;
+}

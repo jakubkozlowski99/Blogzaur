@@ -11,6 +11,8 @@
             data: $(this).serialize(),
             success: function (data) {
                 toastr["success"]("Comment added")
+                var frm = document.getElementsByName('comment-form')[0];
+                frm.reset();
                 LoadComments()
             },
             error: function () {

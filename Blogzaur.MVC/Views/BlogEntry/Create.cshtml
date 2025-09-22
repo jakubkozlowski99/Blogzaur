@@ -12,7 +12,8 @@
     <div class="col-md-4 w-75">
         <form action="/BlogEntry/Create" method="post">
             <div class="form-group mb-3 w-50">
-                <input type="text" class="title-input form-control margin-medium" placeholder="Write your title here" asp-for="Title" />
+                <label class="control-label small-header" for="Title">Title</label>
+                <textarea type="text" class="title-input form-control margin-medium" placeholder="Write your title here" asp-for="Title" ></textarea>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             @* <div class="form-group mb-3">
@@ -20,6 +21,11 @@
                 <input type="text" class="form-control" asp-for="Content" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div> *@
+            <div class="form-group mb-3 w-50">
+                <label class="control-label small-header" for="Description">Description</label>
+                <textarea type="text" class="description form-control margin-medium" placeholder="Write your description here" asp-for="Description"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
             <div class="main-content w-100">
                 <div class="text-editor-header">
                     <button type="button" class="btn btn-editor" data-element="bold">
@@ -62,8 +68,6 @@
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
             </div>
-
-
             <div class="form-group mb-3">
                 <input type="submit" class="btn btn-primary" value="Create" />
             </div>

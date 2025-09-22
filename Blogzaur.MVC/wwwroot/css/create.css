@@ -1,21 +1,7 @@
 ﻿/* Title stuff */
 .title-input {
-    border-width: 1px;
-    border-color: lightslategrey;
+    height: 40px;
 }
-
-    .title-input:focus {
-        outline: none !important;
-        box-shadow: none;
-    }
-
-    .title-input::placeholder {
-        opacity: 0.3;
-    }
-
-        .title-input:focus::placeholder {
-            color: transparent;
-        }
 
 
 .btn-editor {
@@ -61,4 +47,11 @@
 [contentEditable=true]:empty:not(:focus):before {
     content: attr(data-text);
     opacity: 0.3;
+}
+
+
+/* Description input */
+
+.description {
+    height: 300px !important;
 }

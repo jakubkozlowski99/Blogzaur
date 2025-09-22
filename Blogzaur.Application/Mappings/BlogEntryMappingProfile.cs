@@ -14,7 +14,8 @@ namespace Blogzaur.Application.Mappings
             CreateMap<BlogEntryDto, Domain.Entities.BlogEntry>();
 
             CreateMap<Domain.Entities.BlogEntry, BlogEntryDto>()
-                .ForMember(dto => dto.isEditable, opt => opt.MapFrom(src => user != null && (src.AuthorId == user.Id || user.IsInRole("Moderator"))));
+                .ForMember(dto => dto.isEditable, opt => opt.MapFrom(src => user != null && (src.AuthorId == user.Id || user.IsInRole("Moderator"))))
+                .ForMember(dto => dto.AuthorName, opt => opt.MapFrom(src => userContext.GetUserById(src.AuthorId!)!.Username));
 
             CreateMap<BlogEntryDto, EditBlogEntryCommand>();
         }

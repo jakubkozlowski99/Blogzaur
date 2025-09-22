@@ -13,11 +13,14 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
         {
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title is required.")
-                .MaximumLength(100).WithMessage("Title must not exceed 100 characters.");
+                .MaximumLength(50).WithMessage("Title must not exceed 50 characters.");
 
             RuleFor(x => x.Content)
                 .NotEmpty().WithMessage("Content is required.")
                 .MinimumLength(10).WithMessage("Content must be at least 10 characters long.");
+
+            RuleFor(x => x.Description)
+                .MaximumLength(350).WithMessage("Description must not exceed 350 characters.");
         }
     }
 }
