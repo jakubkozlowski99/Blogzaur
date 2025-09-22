@@ -8,9 +8,10 @@
     });
 });
 
-// Elements
+// Constants
 const elements = document.querySelectorAll('.btn');
-
+const descriptionInput = document.getElementById('description');
+const charCounter = document.getElementById('char-counter');
 
 // Events
 elements.forEach(element => {
@@ -23,4 +24,13 @@ elements.forEach(element => {
         }
         else document.execCommand(command, false, null);
     });
+});
+
+descriptionInput.addEventListener('input', function () {
+    const charCount = this.value.length;
+
+    if (charCount > 400) charCounter.style = "color:red;"
+    else charCounter.style = "color:black;"
+
+    charCounter.textContent = `${charCount}/400`;
 });

@@ -54,4 +54,11 @@
 
 .description {
     height: 300px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Char counter */
+
+.char-counter {
+    font-size: 12px;
 }

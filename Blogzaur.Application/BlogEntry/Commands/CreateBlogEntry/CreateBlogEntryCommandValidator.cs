@@ -20,7 +20,7 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
                 .MinimumLength(10).WithMessage("Content must be at least 10 characters long.");
 
             RuleFor(x => x.Description)
-                .MaximumLength(350).WithMessage("Description must not exceed 350 characters.");
+                .MaximumLength(400).WithMessage("Description must not exceed 400 characters.");
         }
     }
 }
