@@ -2,20 +2,31 @@
     container.empty();
 
     for (const comment of comments) {
+        //container.append(
+        //    `<div class="card border-secondary mb-3 w-75">
+        //  <div class="card-header row">
+        //      <div>
+        //        ${comment.authorName},
+        //      </div>
+        //      <div>
+        //        ${comment.createdAt}
+        //      </div>
+        //  </div>
+        //  <div class="card-body">
+        //    <h5 class="card-title">${comment.content}</h5> 
+        //  </div>
+        //</div>`)
         container.append(
-            `<div class="card border-secondary mb-3">
-          <div class="card-header row">
-              <div>
-                ${comment.authorName},
-              </div>
-              <div>
-                ${comment.createdAt}
-              </div>
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">${comment.content}</h5> 
-          </div>
-        </div>`)
+            `<div class="comment-card">
+                <div class="comment-header">
+                    <span class="comment-author">${comment.authorName}</span>
+                    <span class="comment-date">${comment.createdAt}</span>
+                </div>
+             <hr class="comment-separator" />
+             <div class="comment-body">
+             ${comment.content}
+             </div>
+            </div>`)
     }
 }
 

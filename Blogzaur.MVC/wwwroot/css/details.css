@@ -1,3 +1,49 @@
 ﻿.comment-input {
     height: 200px !important;
 }
+
+.comment-card {
+    background: #fff8f1;
+    border: 1.5px solid #ff9800;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.10);
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    width: 90%;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em;
+    color: #e65100;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0;
+    border-bottom: none; /* Remove previous border */
+}
+
+.comment-separator {
+    border: none;
+    border-top: 1.5px dashed #ff9800;
+    margin: 0 -2rem 1rem -2rem; /* Negative margin matches card's horizontal padding */
+    width: calc(100% + 4rem); /* Expand to cover full card width */
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #fb8c00;
+}
+
+.comment-date {
+    font-style: italic;
+    opacity: 0.7;
+    color: #ffb74d;
+}
+
+.comment-body {
+    font-size: 1.08em;
+    color: #4b3f1c;
+    word-break: break-word;
+    padding-top: 0.5rem;
+}
