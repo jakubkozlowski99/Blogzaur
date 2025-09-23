@@ -8,6 +8,13 @@
 
 <h1 class="margin-large" align="center">Blog Entries</h1>
 
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="mb-4" style="text-align:left;">
+        <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="Create">Create New Blog</a>
+    </div>
+}
+
 <div class="blog-grid">
     @foreach (var blog in Model)
     {

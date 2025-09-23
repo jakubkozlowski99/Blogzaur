@@ -13,7 +13,7 @@
         <form action="/BlogEntry/Create" method="post">
             <div class="form-group mb-3 w-50">
                 <label class="control-label small-header" for="Title">Title</label>
-                <textarea type="text" class="title-input form-control margin-medium" placeholder="Write your title here" asp-for="Title" ></textarea>
+                <textarea type="text" class="title-input form-control margin-small" placeholder="Write your title here" asp-for="Title" ></textarea>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             @* <div class="form-group mb-3">
@@ -23,8 +23,8 @@
             </div> *@
             <div class="form-group mb-3 w-50">
                 <label class="control-label small-header" for="Description">Description</label>
-                <div class="margin-medium">
-                    <textarea id="description" type="text" class="description form-control margin-medium" placeholder="Write your description here" asp-for="Description"></textarea>
+                <div>
+                    <textarea id="description" type="text" class="description form-control margin-small" placeholder="Write your description here" asp-for="Description"></textarea>
                     <div id="char-counter" class="char-counter"></div>
                 </div>
                 <span asp-validation-for="Description" class="text-danger"></span>

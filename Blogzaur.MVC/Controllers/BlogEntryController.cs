@@ -29,7 +29,7 @@ namespace Blogzaur.MVC.Controllers
             return View(blogEntries);
         }
 
-        [Authorize(Roles = "Owner")]
+        [Authorize(Roles = "RegularUser")]
         public IActionResult Create()
         {
             return View();
@@ -68,7 +68,7 @@ namespace Blogzaur.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Owner")]
+        [Authorize(Roles = "RegularUser")]
         public async Task<IActionResult> Create(CreateBlogEntryCommand command)
         {
             if (!ModelState.IsValid)
