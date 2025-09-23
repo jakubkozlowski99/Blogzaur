@@ -1,46 +1,33 @@
 ﻿@model IEnumerable<Blogzaur.Application.BlogEntry.BlogEntryDto>
 
 @{
-    ViewData["Title"] = "Blogs";
+    ViewData["Title"] = "Blog List";
 }
 
-<h1>Blogs</h1>
+<link rel="stylesheet" href="~/css/list.css" asp-append-version="true" />
 
+<h1 class="margin-large" align="center">Blog Entries</h1>
 
-
-<p>
-    <a class="btn btn-primary margin-medium no-side-margin" asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @if (item.isEditable)
+<div class="blog-grid">
+    @foreach (var blog in Model)
+    {
+        <div class="blog-card">
+            <div class="blog-card-header">
+                <span class="blog-title">@blog.Title</span>
+            </div>
+            <div class="blog-card-meta">
+                <span class="blog-author">By @blog.AuthorName</span>
+            </div>
+            <div class="blog-card-description">
+                @blog.Description
+            </div>
+            <div class="blog-card-actions">
+                @if (blog.isEditable)
                 {
-                    <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@blog.Id">Edit</a>
                 }
-                <a class="btn btn-outline-secondary" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@blog.Id">View</a>
+            </div>
+        </div>
+    }
+</div>
