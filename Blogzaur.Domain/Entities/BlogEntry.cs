@@ -19,5 +19,7 @@ namespace Blogzaur.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public int Views { get; set; } = 0;
+        public int LikeAmount { get; set; } = 0;
     }
 }

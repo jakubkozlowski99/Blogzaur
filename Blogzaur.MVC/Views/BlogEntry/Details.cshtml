@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 @{
@@ -45,7 +46,27 @@
     <hr />
     <h2>@Model.Title</h2>
     <div style="margin-top:50px;">@Html.Raw(Model.Content)</div>
-    <hr />
+    <div id="likeBlogEntry">
+        @if (!Model.isLiked)
+        {
+            <form id="like-form" method="post" asp-controller="Like" asp-action="LikeBlogEntry" asp-route-id="@Model.Id" class="like-form">
+                <button type="submit" class="like-heart" aria-label="Like">
+                    <i class="fa-regular fa-heart"></i> <!-- Outlined heart -->
+                </button>
+                <span id="blog-like-count" class="ms-2">@Model.LikeAmount</span>
+            </form>
+        }
+        else
+        {
+            <form id="unlike-form" method="post" asp-controller="Like" asp-action="UnLikeBlogEntry" asp-route-id="@Model.Id" class="like-form">
+                <button type="submit" class="like-heart" aria-label="Like">
+                    <i class="fa-solid fa-heart"></i> <!-- Filled heart -->
+                </button>
+                <span id="blog-like-count" class="ms-2">@Model.LikeAmount</span>
+            </form>
+        }
+    </div>
+    <hr /> 
 </div>
 
 <div class="margin-large">

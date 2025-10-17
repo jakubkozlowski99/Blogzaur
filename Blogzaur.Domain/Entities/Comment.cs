@@ -17,5 +17,6 @@ namespace Blogzaur.Domain.Entities
         public BlogEntry? BlogEntry { get; set; }
         public string? AuthorId { get; set; }
         public IdentityUser? Author { get; set; }
+        public int LikeAmount { get; set; } = 0;
     }
 }

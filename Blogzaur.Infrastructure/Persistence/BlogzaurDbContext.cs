@@ -12,6 +12,8 @@ namespace Blogzaur.Infrastructure.Persistence
         }
         public DbSet<Domain.Entities.BlogEntry> BlogEntries { get; set; }
         public DbSet<Domain.Entities.Comment> Comments { get; set; }
+        public DbSet<Domain.Entities.UserCommentLike> UserCommentLikes { get; set; }
+        public DbSet<Domain.Entities.UserBlogEntryLike> UserBlogEntryLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,6 +24,13 @@ namespace Blogzaur.Infrastructure.Persistence
                 .WithOne(c => c.BlogEntry)
                 .HasForeignKey(c => c.BlogEntryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Domain.Entities.UserCommentLike>()
+                .HasKey(ul => new { ul.UserId, ul.CommentId });
+
+            builder.Entity<Domain.Entities.UserBlogEntryLike>()
+                .HasKey(ul => new { ul.UserId, ul.BlogEntryId });
+
         }
     }
 }

@@ -1,36 +1,93 @@
-﻿@model Blogzaur.Application.BlogEntry.Commands.EditBlogEntry.EditBlogEntryCommand
+﻿@using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry
 
-@{
-    ViewData["Title"] = "Edit";
-}
+@model EditBlogEntryCommand
 
-<h1>Edit</h1>
+<head>
+    <link rel="stylesheet" href="~/css/create.css" asp-append-version="true" />
+</head>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+<h1 class="margin-large" align="center">Edit Blog Entry</h1>
+
+<div class="col-xs-1" align="center">
+    <div class="col-md-4 w-75">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group mb-3 w-50">
+                <label class="control-label small-header" for="Title">Title</label>
+                <textarea type="text" class="title-input form-control margin-small" placeholder="Write your title here" asp-for="Title"></textarea>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
+            <div class="form-group mb-3 w-50">
+                <label class="control-label small-header" for="Description">Description</label>
+                <div>
+                    <textarea id="description" type="text" class="description form-control margin-small" placeholder="Write your description here" asp-for="Description"></textarea>
+                    <div id="char-counter" class="char-counter"></div>
+                </div>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="main-content w-100">
+                <div class="text-editor-header">
+                    <button type="button" class="btn btn-editor" data-element="bold">
+                        <i class="fa fa-bold"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="italic">
+                        <i class="fa fa-italic"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="underline">
+                        <i class="fa fa-underline"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="insertUnorderedList">
+                        <i class="fa fa-list-ul"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="insertOrderedList">
+                        <i class="fa fa-list-ol"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="createLink">
+                        <i class="fa fa-link"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyLeft">
+                        <i class="fa fa-align-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyCenter">
+                        <i class="fa fa-align-center"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyRight">
+                        <i class="fa fa-align-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="justifyFull">
+                        <i class="fa fa-align-justify"></i>
+                    </button>
+                    <button type="button" class="btn btn-editor" data-element="insertImage">
+                        <i class="fa fa-image"></i>
+                    </button>
+                </div>
+                <div class="form-group mb-3">
+                    <input type="hidden" asp-for="Content" />
+                    <div class="form-control content" contenteditable="true" data-text="Write your blog here"></div>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" class="btn btn-primary" value="Save Changes" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-controller="BlogEntry" asp-action="List">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://use.fontawesome.com/a31a3f8384.js"></script>
+    <script src="~/js/BlogEntry/Create.js"></script>
+    <script>
+        // Pre-populate the contenteditable div with the existing content
+        document.addEventListener('DOMContentLoaded', function () {
+            var contentDiv = document.querySelector('.form-control.content[contenteditable="true"]');
+            var hiddenInput = document.querySelector('input[type="hidden"][name="Content"]');
+            if (contentDiv && hiddenInput && hiddenInput.value) {
+                contentDiv.innerHTML = hiddenInput.value;
+            }
+        });
+    </script>
 }

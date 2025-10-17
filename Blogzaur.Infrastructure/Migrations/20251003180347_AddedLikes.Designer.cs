@@ -4,6 +4,7 @@ using Blogzaur.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogzaur.Infrastructure.Migrations
 {
     [DbContext(typeof(BlogzaurDbContext))]
-    partial class BlogzaurDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003180347_AddedLikes")]
+    partial class AddedLikes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,9 +48,6 @@ namespace Blogzaur.Infrastructure.Migrations
 
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
-
-                    b.Property<int>("LikeAmount")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -87,9 +87,6 @@ namespace Blogzaur.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LikeAmount")
-                        .HasColumnType("int");
-
                     b.Property<bool>("isHidden")
                         .HasColumnType("bit");
 
@@ -110,10 +107,15 @@ namespace Blogzaur.Infrastructure.Migrations
                     b.Property<int>("BlogEntryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("LikedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "BlogEntryId");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("BlogEntryId");
 
@@ -128,10 +130,15 @@ namespace Blogzaur.Infrastructure.Migrations
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("LikedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "CommentId");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("CommentId");
 
@@ -367,40 +374,36 @@ namespace Blogzaur.Infrastructure.Migrations
 
             modelBuilder.Entity("Blogzaur.Domain.Entities.UserBlogEntryLike", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
                     b.HasOne("Blogzaur.Domain.Entities.BlogEntry", "BlogEntry")
                         .WithMany()
                         .HasForeignKey("BlogEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Author");
 
                     b.Navigation("BlogEntry");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Blogzaur.Domain.Entities.UserCommentLike", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
                     b.HasOne("Blogzaur.Domain.Entities.Comment", "Comment")
                         .WithMany()
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Author");
 
                     b.Navigation("Comment");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

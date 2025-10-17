@@ -47,3 +47,53 @@
     word-break: break-word;
     padding-top: 0.5rem;
 }
+
+.like-heart {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    vertical-align: middle;
+}
+.like-heart i {
+    font-size: 1.5rem; /* Reduced from 2rem to 1.3rem */
+    color: #e25555;
+    transition: color 0.2s;
+}
+.like-heart:hover i,
+.like-heart:focus i {
+    color: #b22222;
+}
+.like-thumb {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 2rem;
+    color: #2196f3;
+    cursor: pointer;
+    outline: none;
+    vertical-align: middle;
+    transition: color 0.2s;
+}
+.like-thumb i {
+    font-size: 2rem;
+    color: #2196f3;
+    transition: color 0.2s;
+}
+.like-thumb:hover i,
+.like-thumb:focus i {
+    color: #1565c0;
+}
+.like-thumb:hover,
+.like-thumb:focus {
+    color: #1565c0;
+}
+#blog-like-count {
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-left: 0.5em;
+}
+.like-form {
+    margin-top: 2rem; /* Adjust value as needed */
+}

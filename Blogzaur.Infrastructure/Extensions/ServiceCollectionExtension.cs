@@ -23,6 +23,7 @@ namespace Blogzaur.Infrastructure.Extensions
 
             services.AddScoped<IBlogEntryRepository, BlogEntryRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ILikeRepository, LikeRepository>();
         }
     }
 }

@@ -4,6 +4,7 @@ using Blogzaur.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogzaur.Infrastructure.Migrations
 {
     [DbContext(typeof(BlogzaurDbContext))]
-    partial class BlogzaurDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003191117_LikeEntitiesFixed")]
+    partial class LikeEntitiesFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,9 +48,6 @@ namespace Blogzaur.Infrastructure.Migrations
 
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
-
-                    b.Property<int>("LikeAmount")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -86,9 +86,6 @@ namespace Blogzaur.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("LikeAmount")
-                        .HasColumnType("int");
 
                     b.Property<bool>("isHidden")
                         .HasColumnType("bit");

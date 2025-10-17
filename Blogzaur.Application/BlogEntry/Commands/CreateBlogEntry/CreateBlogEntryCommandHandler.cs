@@ -26,7 +26,7 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
         public async Task<Unit> Handle(CreateBlogEntryCommand request, CancellationToken cancellationToken)
         {
             var currentUser = _userContext.GetCurrentUser();
-            if (currentUser == null || !currentUser.IsInRole("Owner"))
+            if (currentUser == null || !currentUser.IsInRole("RegularUser"))
             {
                 return Unit.Value;
             }

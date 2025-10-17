@@ -3,6 +3,7 @@ using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.Comment.Commands.CreateComment;
 using Blogzaur.Application.Mappings;
+using Blogzaur.Domain.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
