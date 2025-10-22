@@ -13,6 +13,7 @@ namespace Blogzaur.MVC.Controllers
     public class CommentController : Controller
     {
         private readonly IMediator _mediator;
+
         public CommentController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;

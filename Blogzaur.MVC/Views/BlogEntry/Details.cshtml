@@ -58,7 +58,7 @@
         }
         else
         {
-            <form id="unlike-form" method="post" asp-controller="Like" asp-action="UnLikeBlogEntry" asp-route-id="@Model.Id" class="like-form">
+            <form id="unlike-form" method="delete" asp-controller="Like" asp-action="UnLikeBlogEntry" asp-route-id="@Model.Id" class="like-form">
                 <button type="submit" class="like-heart" aria-label="Like">
                     <i class="fa-solid fa-heart"></i> <!-- Filled heart -->
                 </button>

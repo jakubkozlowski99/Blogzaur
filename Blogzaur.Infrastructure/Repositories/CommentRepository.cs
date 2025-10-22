@@ -13,9 +13,11 @@ namespace Blogzaur.Infrastructure.Repositories
     public class CommentRepository : ICommentRepository
     {
         private readonly BlogzaurDbContext _dbContext;
-        public CommentRepository(BlogzaurDbContext dbContext)
+        private readonly ILikeRepository _likeRepository;
+        public CommentRepository(BlogzaurDbContext dbContext, ILikeRepository likeRepository)
         {
             _dbContext = dbContext;
+            _likeRepository = likeRepository;
         }
 
         public Task Commit()
@@ -32,5 +34,10 @@ namespace Blogzaur.Infrastructure.Repositories
                 .Where(x => x.BlogEntryId == blogEntryId)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
+
+        public bool HasUserLiked(int commentId, string userId)
+        {
+            return _likeRepository.CheckIfCommentLikeExists(commentId, userId);
+        }
     }
 }

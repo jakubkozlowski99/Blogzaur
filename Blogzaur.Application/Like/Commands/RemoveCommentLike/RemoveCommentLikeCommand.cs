@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blogzaur.Application.Like.Commands.AddCommentLike
+namespace Blogzaur.Application.Like.Commands.RemoveCommentLike
 {
-    public class AddCommentLikeCommand : IRequest
+    public class RemoveCommentLikeCommand : IRequest
     {
         public int CommentId { get; set; }
     }

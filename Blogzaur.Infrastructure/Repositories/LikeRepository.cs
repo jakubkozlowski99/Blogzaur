@@ -1,4 +1,5 @@
-﻿using Blogzaur.Domain.Interfaces;
+﻿using Blogzaur.Domain.Entities;
+using Blogzaur.Domain.Interfaces;
 using Blogzaur.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,13 @@ namespace Blogzaur.Infrastructure.Repositories
             if (CheckIfCommentLikeExists(like.CommentId, like.UserId))
                 return;
             _dbContext.UserCommentLikes.Add(like);
+
+            var count = GetCommentLikeAmount(like.CommentId);
+            _dbContext.Comments
+                .Where(c => c.Id == like.CommentId)
+                .ToList()
+                .ForEach(c => c.LikeAmount = count + 1);
+
             await _dbContext.SaveChangesAsync();
         }
 
@@ -86,8 +94,27 @@ namespace Blogzaur.Infrastructure.Repositories
 
         public int GetCommentLikeAmount(int commentId)
         {
-            return _dbContext.UserCommentLikes
-                .Count(l => l.CommentId == commentId);
+            return _dbContext.Comments
+                .Where(c => c.Id == commentId)
+                .Select(c => c.LikeAmount)
+                .FirstOrDefault();
+        }
+
+        public async Task RemoveCommentLike(UserCommentLike like)
+        {
+            var existingLike = _dbContext.UserCommentLikes
+                .FirstOrDefault(l => l.CommentId == like.CommentId && l.UserId == like.UserId);
+            if (existingLike == null)
+                return;
+
+            _dbContext.UserCommentLikes.Remove(existingLike);
+            var count = GetCommentLikeAmount(like.CommentId);
+            _dbContext.Comments
+                .Where(c => c.Id == like.CommentId)
+                .ToList()
+                .ForEach(c => c.LikeAmount = count - 1);
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

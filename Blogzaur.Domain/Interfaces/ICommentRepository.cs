@@ -12,5 +12,6 @@ namespace Blogzaur.Domain.Interfaces
         Task Commit();
         Task Create(Comment comment);
         Task<List<Comment>> GetByBlogEntryId(int blogEntryId);
+        public bool HasUserLiked(int commentId, string userId);
     }
 }

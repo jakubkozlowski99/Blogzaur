@@ -11,7 +11,9 @@ namespace Blogzaur.Domain.Interfaces
         Task AddBlogEntryLike(Entities.UserBlogEntryLike like);
         Task RemoveBlogEntryLike(Entities.UserBlogEntryLike like);
         Task AddCommentLike(Entities.UserCommentLike like);
+        Task RemoveCommentLike(Entities.UserCommentLike like);
         public bool CheckIfBlogEntryLikeExists(int blogEntryId, string userId);
+        public bool CheckIfCommentLikeExists(int commentId, string userId);
         public int GetBlogEntryLikeAmount(int blogEntryId);
         int GetCommentLikeAmount(int commentId);
     }

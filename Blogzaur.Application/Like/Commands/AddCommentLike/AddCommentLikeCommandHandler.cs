@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Blogzaur.Application.Like.Commands.AddCommentLike
 {
-    public class AddCommentLikeCommandHandler
+    public class AddCommentLikeCommandHandler : IRequestHandler<AddCommentLikeCommand>
     {
         private readonly ILikeRepository _likeRepository;
         private readonly IUserContext _userContext;

@@ -2,6 +2,7 @@
 using Blogzaur.Application.Like.Commands.AddBlogEntryLike;
 using Blogzaur.Application.Like.Commands.AddCommentLike;
 using Blogzaur.Application.Like.Commands.RemoveBlogEntryLike;
+using Blogzaur.Application.Like.Commands.RemoveCommentLike;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace Blogzaur.MVC.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Authorize(Roles = "RegularUser")]
         public async Task<IActionResult> UnlikeBlogEntry(int id)
         {
@@ -39,6 +40,15 @@ namespace Blogzaur.MVC.Controllers
         public async Task<IActionResult> LikeComment(int id)
         {
             await _mediator.Send(new AddCommentLikeCommand { CommentId = id });
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "RegularUser")]
+        public async Task<IActionResult> UnlikeComment(int id)
+        {
+            await _mediator.Send(new RemoveCommentLikeCommand { CommentId = id });
 
             return Ok();
         }
