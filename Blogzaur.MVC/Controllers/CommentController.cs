@@ -2,6 +2,8 @@
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.Comment.Commands.CreateComment;
 using Blogzaur.Application.Comment.Queries.GetCommentsByBlogEntryId;
+using Blogzaur.Application.Like.Commands.AddCommentLike;
+using Blogzaur.Application.Like.Commands.RemoveCommentLike;
 using Blogzaur.MVC.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +46,24 @@ namespace Blogzaur.MVC.Controllers
             var comments = await _mediator.Send(new GetCommentsByBlogEntryIdQuery(blogEntryId));
 
             return Ok(comments);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "RegularUser")]
+        public async Task<IActionResult> LikeComment(int id)
+        {
+            await _mediator.Send(new AddCommentLikeCommand { CommentId = id });
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "RegularUser")]
+        public async Task<IActionResult> UnlikeComment(int id)
+        {
+            await _mediator.Send(new RemoveCommentLikeCommand { CommentId = id });
+
+            return Ok();
         }
     }
 }

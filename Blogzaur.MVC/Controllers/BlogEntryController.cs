@@ -4,6 +4,8 @@ using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
+using Blogzaur.Application.Like.Commands.AddBlogEntryLike;
+using Blogzaur.Application.Like.Commands.RemoveBlogEntryLike;
 using Blogzaur.MVC.Extensions;
 using Blogzaur.MVC.Models;
 using MediatR;
@@ -81,6 +83,24 @@ namespace Blogzaur.MVC.Controllers
             this.SetNotification("success", "Blog entry created successfully!");
 
             return RedirectToAction(nameof(List));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "RegularUser")]
+        public async Task<IActionResult> LikeBlogEntry(int id)
+        {
+            await _mediator.Send(new AddBlogEntryLikeCommand { BlogEntryId = id });
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "RegularUser")]
+        public async Task<IActionResult> UnlikeBlogEntry(int id)
+        {
+            await _mediator.Send(new RemoveBlogEntryLikeCommand { BlogEntryId = id });
+
+            return Ok();
         }
     }
 }

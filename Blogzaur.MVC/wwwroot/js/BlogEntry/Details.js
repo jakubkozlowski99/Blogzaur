@@ -125,8 +125,8 @@ const RenderComments = (comments, container) => {
     container.empty();
 
     // server-provided bases (optional)
-    const likeUrlBase = '/Like/LikeComment';
-    const unlikeUrlBase = '/Like/UnlikeComment';
+    const likeUrlBase = '/Comment/LikeComment';
+    const unlikeUrlBase = '/Comment/UnlikeComment';
     const token = $('input[name="__RequestVerificationToken"]').first().val() || '';
 
     for (const comment of comments) {
