@@ -17,10 +17,7 @@ namespace Blogzaur.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public Task Commit()
-            => _dbContext.SaveChangesAsync();
-
-        public async Task AddBlogEntryLike(Domain.Entities.UserBlogEntryLike like)
+        public async Task AddBlogEntryLike(UserBlogEntryLike like)
         {
             if(CheckIfBlogEntryLikeExists(like.BlogEntryId, like.UserId))
                 return;
@@ -35,7 +32,7 @@ namespace Blogzaur.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveBlogEntryLike(Domain.Entities.UserBlogEntryLike like)
+        public async Task RemoveBlogEntryLike(UserBlogEntryLike like)
         {
             var existingLike = _dbContext.UserBlogEntryLikes
                 .FirstOrDefault(l => l.BlogEntryId == like.BlogEntryId && l.UserId == like.UserId);
@@ -51,7 +48,7 @@ namespace Blogzaur.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task AddCommentLike(Domain.Entities.UserCommentLike like)
+        public async Task AddCommentLike(UserCommentLike like)
         {
             if (CheckIfCommentLikeExists(like.CommentId, like.UserId))
                 return;

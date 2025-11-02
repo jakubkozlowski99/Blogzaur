@@ -38,6 +38,21 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.AuthorName)
         </dd>
+
+        @if (ViewBag.CategoryNames != null)
+        {
+            var names = ViewBag.CategoryNames as IEnumerable<string>;
+            if (names!.Any())
+            {
+                <dt class="col-sm-2">Categories</dt>
+                <dd class="col-sm-10">
+                    @foreach (var name in names!)
+                    {
+                        <span class="badge bg-secondary me-1">@name</span>
+                    }
+                </dd>
+            }
+        }
     </dl>
 </div>
 

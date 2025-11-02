@@ -9,7 +9,6 @@ namespace Blogzaur.Domain.Interfaces
 {
     public interface ICommentRepository
     {
-        Task Commit();
         Task Create(Comment comment);
         Task<List<Comment>> GetByBlogEntryId(int blogEntryId);
         public bool HasUserLiked(int commentId, string userId);

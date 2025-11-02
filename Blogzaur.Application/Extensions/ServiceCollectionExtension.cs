@@ -30,6 +30,8 @@ namespace Blogzaur.Application.Extensions
 
                     cfg.AddProfile(new BlogEntryMappingProfile(userContext));
                     cfg.AddProfile(new CommentMappingProfile(userContext));
+                    cfg.AddProfile(new CategoryMappingProfile());
+                    cfg.AddProfile(new BlogEntryCategoryMappingProfile());
                 }).CreateMapper());
 
             services.AddValidatorsFromAssemblyContaining<CreateBlogEntryCommandValidator>()

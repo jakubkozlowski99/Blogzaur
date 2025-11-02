@@ -14,6 +14,8 @@ namespace Blogzaur.Infrastructure.Persistence
         public DbSet<Domain.Entities.Comment> Comments { get; set; }
         public DbSet<Domain.Entities.UserCommentLike> UserCommentLikes { get; set; }
         public DbSet<Domain.Entities.UserBlogEntryLike> UserBlogEntryLikes { get; set; }
+        public DbSet<Domain.Entities.Category> Categories { get; set; }
+        public DbSet<Domain.Entities.BlogEntryCategory> BlogEntryCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,6 +32,9 @@ namespace Blogzaur.Infrastructure.Persistence
 
             builder.Entity<Domain.Entities.UserBlogEntryLike>()
                 .HasKey(ul => new { ul.UserId, ul.BlogEntryId });
+
+            builder.Entity<Domain.Entities.BlogEntryCategory>()
+                .HasKey(bc => new { bc.BlogEntryId, bc.CategoryId });
 
         }
     }

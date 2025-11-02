@@ -16,7 +16,9 @@ namespace Blogzaur.Infrastructure.Repositories
         }
 
         public Task Commit()
-            => _dbContext.SaveChangesAsync();
+        {
+            return _dbContext.SaveChangesAsync();
+        }
 
         public async Task Create(BlogEntry blogEntry)
         {

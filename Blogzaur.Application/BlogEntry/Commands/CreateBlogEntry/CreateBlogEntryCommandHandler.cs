@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 {
-    public class CreateBlogEntryCommandHandler : IRequestHandler<CreateBlogEntryCommand>
+    public class CreateBlogEntryCommandHandler : IRequestHandler<CreateBlogEntryCommand, int>
     {
         private readonly IBlogEntryRepository _blogEntryRepository;
         private readonly IMapper _mapper;
@@ -23,12 +23,12 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
             _userContext = userContext;
         }
 
-        public async Task<Unit> Handle(CreateBlogEntryCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateBlogEntryCommand request, CancellationToken cancellationToken)
         {
             var currentUser = _userContext.GetCurrentUser();
             if (currentUser == null || !currentUser.IsInRole("RegularUser"))
             {
-                return Unit.Value;
+                return 0;
             }
 
             var blogEntry = _mapper.Map<Domain.Entities.BlogEntry>(request);
@@ -37,7 +37,9 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 
             await _blogEntryRepository.Create(blogEntry);
 
-            return Unit.Value;
+            var blogEntryId = blogEntry.Id;
+
+            return blogEntryId;
         }
     }
 }

@@ -4,14 +4,19 @@ using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
+using Blogzaur.Application.BlogEntryCategory.Commands;
+using Blogzaur.Application.BlogEntryCategory.Commands.AddBlogEntryCategory;
+using Blogzaur.Application.BlogEntryCategory.Queries.GetBlogEntryCategories;
+using Blogzaur.Application.Category.Queries;
+using Blogzaur.Application.Category.Queries.GetAllCategories;
+using Blogzaur.Application.Category.Queries.GetCategoryById;
 using Blogzaur.Application.Like.Commands.AddBlogEntryLike;
 using Blogzaur.Application.Like.Commands.RemoveBlogEntryLike;
 using Blogzaur.MVC.Extensions;
-using Blogzaur.MVC.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blogzaur.MVC.Controllers
 {
@@ -32,14 +37,40 @@ namespace Blogzaur.MVC.Controllers
         }
 
         [Authorize(Roles = "RegularUser")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var selectItems = GetAllCategories().Result;
+
+            ViewBag.Categories = selectItems;
+
             return View();
         }
 
         public async Task<IActionResult> Details(int id)
         {
             var dto = await _mediator.Send(new GetBlogEntryByIdQuery(id));
+
+            var blogEntryCategories = await _mediator.Send(new GetBlogEntryCategoriesQuery()
+            {
+                BlogEntryId = id
+            });
+
+            var categoryNames = new List<string>();
+
+            foreach (var bec in blogEntryCategories)
+            {
+                var categoryDto = await _mediator.Send(new GetCategoryByIdQuery()
+                {
+                    Id = bec.CategoryId
+                });
+                if (categoryDto != null && !string.IsNullOrEmpty(categoryDto.Name))
+                {
+                    categoryNames.Add(categoryDto.Name);
+                }
+            }
+
+            ViewBag.CategoryNames = categoryNames;
+
             return View(dto);
         }
 
@@ -75,10 +106,21 @@ namespace Blogzaur.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Categories = GetAllCategories().Result;
+
                 return View(command);
             }
 
-            await _mediator.Send(command);
+            var blogEntryId = await _mediator.Send(command);
+
+            foreach (var categoryId in command.CategoryIds)
+            {
+                await _mediator.Send(new AddBlogEntryCategoryCommand
+                {
+                    BlogEntryId = blogEntryId,
+                    CategoryId = categoryId
+                });
+            }
 
             this.SetNotification("success", "Blog entry created successfully!");
 
@@ -101,6 +143,31 @@ namespace Blogzaur.MVC.Controllers
             await _mediator.Send(new RemoveBlogEntryLikeCommand { BlogEntryId = id });
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "RegularUser")]
+        public async Task<IActionResult> AddBlogEntryCategory(int blogEntryId, int categoryId)
+        {
+            var command = new AddBlogEntryCategoryCommand
+            {
+                BlogEntryId = blogEntryId,
+                CategoryId = categoryId
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
+        public async Task<List<SelectListItem>> GetAllCategories()
+        {
+            var categories = await _mediator.Send(new GetAllCategoriesQuery());
+            var selectItems = categories
+                .Select(c => new SelectListItem(c.Name ?? c.ToString(), c.Id.ToString()))
+                .ToList();
+
+            return selectItems;
         }
     }
 }

@@ -19,10 +19,6 @@ namespace Blogzaur.Infrastructure.Repositories
             _dbContext = dbContext;
             _likeRepository = likeRepository;
         }
-
-        public Task Commit()
-            => _dbContext.SaveChangesAsync();
-
         public async Task Create(Comment comment)
         {
             _dbContext.Add(comment);
