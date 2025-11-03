@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 {
-    public class CreateBlogEntryCommand : BlogEntryDto, IRequest<int>
+    public class CreateBlogEntryCommand : BlogEntryDto, IRequest
     {
         public List<int> CategoryIds { get; set; } = new();
     }

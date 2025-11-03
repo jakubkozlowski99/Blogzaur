@@ -25,6 +25,39 @@
                 </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
+            @* Category UI (same UX as Create.cshtml) *@
+            <div class="form-group mb-3 w-25">
+                <label class="control-label small-header" for="categorySelect">Categories</label>
+                <select id="categorySelect" class="form-select margin-small">
+                    <option value="">Select category...</option>
+                    @foreach (var category in ViewBag.Categories as List<SelectListItem> ?? new List<SelectListItem>())
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </select>
+
+                <div id="selectedCategories" class="mt-2">
+                    @* Pre-render existing selected categories as hidden inputs + removable badges,
+                       matching the markup that client-side code uses when adding categories in Create. *@
+                    @{
+                        var categories = ViewBag.Categories as List<SelectListItem> ?? new List<SelectListItem>();
+                        if (Model?.CategoryIds != null && Model.CategoryIds.Any())
+                        {
+                            foreach (var id in Model.CategoryIds)
+                            {
+                                var text = categories.FirstOrDefault(c => c.Value == id.ToString())?.Text ?? id.ToString();
+                                <input type="hidden" name="CategoryIds" value="@id" />
+                                <span class="badge bg-secondary me-1 selected-category" data-id="@id">
+                                    @text
+                                    <button type="button" class="btn-close btn-close-white btn-sm ms-2 remove-category" aria-label="Remove" data-id="@id"></button>
+                                </span>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+
             <div class="main-content w-100">
                 <div class="text-editor-header">
                     <button type="button" class="btn btn-editor" data-element="bold">
@@ -80,13 +113,22 @@
     }
     <script src="https://use.fontawesome.com/a31a3f8384.js"></script>
     <script src="~/js/BlogEntry/Create.js"></script>
+    <script src="~/js/BlogEntry/Edit.js"></script>
+    @* Inline fallback script to ensure removal works if bootstrap btn-close styling isn't available *@
     <script>
-        // Pre-populate the contenteditable div with the existing content
-        document.addEventListener('DOMContentLoaded', function () {
-            var contentDiv = document.querySelector('.form-control.content[contenteditable="true"]');
-            var hiddenInput = document.querySelector('input[type="hidden"][name="Content"]');
-            if (contentDiv && hiddenInput && hiddenInput.value) {
-                contentDiv.innerHTML = hiddenInput.value;
+        // allow keyboard-accessible removal if needed
+        document.addEventListener('click', function (e) {
+            if (e.target && (e.target.classList.contains('remove-category') || e.target.closest('.remove-category'))) {
+                e.preventDefault();
+                var btn = e.target.closest('.remove-category');
+                var id = btn.getAttribute('data-id');
+                if (!id) return;
+                // remove hidden input(s) with this value
+                var inputs = document.querySelectorAll('input[name="CategoryIds"][value="' + id + '"]');
+                inputs.forEach(i => i.remove());
+                // remove badge
+                var badge = btn.closest('.selected-category');
+                if (badge) badge.remove();
             }
         });
     </script>

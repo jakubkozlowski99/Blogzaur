@@ -10,6 +10,6 @@ namespace Blogzaur.Application.BlogEntry.Commands.EditBlogEntry
 {
     public class EditBlogEntryCommand : BlogEntryDto, IRequest
     {
-
+        public List<int> CategoryIds { get; set; } = new List<int>();
     }
 }

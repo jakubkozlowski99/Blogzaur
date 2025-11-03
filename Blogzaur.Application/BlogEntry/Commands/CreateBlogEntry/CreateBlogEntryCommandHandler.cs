@@ -10,25 +10,27 @@ using System.Threading.Tasks;
 
 namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 {
-    public class CreateBlogEntryCommandHandler : IRequestHandler<CreateBlogEntryCommand, int>
+    public class CreateBlogEntryCommandHandler : IRequestHandler<CreateBlogEntryCommand>
     {
         private readonly IBlogEntryRepository _blogEntryRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly IUserContext _userContext;
 
-        public CreateBlogEntryCommandHandler(IBlogEntryRepository blogEntryRepository, IMapper mapper, IUserContext userContext)
+        public CreateBlogEntryCommandHandler(IBlogEntryRepository blogEntryRepository, ICategoryRepository categoryRepository, IMapper mapper, IUserContext userContext)
         {
             _blogEntryRepository = blogEntryRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
             _userContext = userContext;
         }
 
-        public async Task<int> Handle(CreateBlogEntryCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateBlogEntryCommand request, CancellationToken cancellationToken)
         {
             var currentUser = _userContext.GetCurrentUser();
             if (currentUser == null || !currentUser.IsInRole("RegularUser"))
             {
-                return 0;
+                return Unit.Value;
             }
 
             var blogEntry = _mapper.Map<Domain.Entities.BlogEntry>(request);
@@ -37,9 +39,20 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 
             await _blogEntryRepository.Create(blogEntry);
 
-            var blogEntryId = blogEntry.Id;
+            foreach (var categoryId in request.CategoryIds)
+            {
+                var category = await _categoryRepository.GetById(categoryId);
+                if (category != null)
+                {
+                    await _categoryRepository.AddBlogEntryCategory(new Domain.Entities.BlogEntryCategory
+                    {
+                        BlogEntryId = blogEntry.Id,
+                        CategoryId = categoryId
+                    });
+                }
+            }
 
-            return blogEntryId;
+            return Unit.Value;
         }
     }
 }

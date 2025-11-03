@@ -4,8 +4,6 @@ using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
-using Blogzaur.Application.BlogEntryCategory.Commands;
-using Blogzaur.Application.BlogEntryCategory.Commands.AddBlogEntryCategory;
 using Blogzaur.Application.BlogEntryCategory.Queries.GetBlogEntryCategories;
 using Blogzaur.Application.Category.Queries;
 using Blogzaur.Application.Category.Queries.GetAllCategories;
@@ -85,6 +83,17 @@ namespace Blogzaur.MVC.Controllers
 
             EditBlogEntryCommand model = _mapper.Map<EditBlogEntryCommand>(dto);
 
+            // Populate currently selected category ids for this blog entry
+            var blogEntryCategories = await _mediator.Send(new GetBlogEntryCategoriesQuery()
+            {
+                BlogEntryId = id
+            });
+
+            model.CategoryIds = blogEntryCategories.Select(bc => bc.CategoryId).ToList();
+
+            // Provide all categories for the UI (same structure as Create view)
+            ViewBag.Categories = await GetAllCategories();
+
             return View(model);
         }
 
@@ -93,6 +102,8 @@ namespace Blogzaur.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // repopulate categories so the view can render them again
+                ViewBag.Categories = await GetAllCategories();
                 return View(command);
             }
 
@@ -111,16 +122,7 @@ namespace Blogzaur.MVC.Controllers
                 return View(command);
             }
 
-            var blogEntryId = await _mediator.Send(command);
-
-            foreach (var categoryId in command.CategoryIds)
-            {
-                await _mediator.Send(new AddBlogEntryCategoryCommand
-                {
-                    BlogEntryId = blogEntryId,
-                    CategoryId = categoryId
-                });
-            }
+            await _mediator.Send(command);
 
             this.SetNotification("success", "Blog entry created successfully!");
 
@@ -141,21 +143,6 @@ namespace Blogzaur.MVC.Controllers
         public async Task<IActionResult> UnlikeBlogEntry(int id)
         {
             await _mediator.Send(new RemoveBlogEntryLikeCommand { BlogEntryId = id });
-
-            return Ok();
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "RegularUser")]
-        public async Task<IActionResult> AddBlogEntryCategory(int blogEntryId, int categoryId)
-        {
-            var command = new AddBlogEntryCategoryCommand
-            {
-                BlogEntryId = blogEntryId,
-                CategoryId = categoryId
-            };
-
-            await _mediator.Send(command);
 
             return Ok();
         }
