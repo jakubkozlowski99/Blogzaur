@@ -21,6 +21,9 @@ namespace Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry
 
             RuleFor(x => x.Description)
                 .MaximumLength(400).WithMessage("Description must not exceed 400 characters.");
+
+            RuleFor(x => x.CategoryIds)
+                .NotEmpty().WithMessage("At least one category must be selected.");
         }
     }
 }

@@ -10,6 +10,12 @@
         return !!selectedContainer.querySelector(`input[type="hidden"][name="CategoryIds"][value="${id}"]`);
     }
 
+    function updateSelectState() {
+        // Count hidden inputs used for model binding
+        const count = selectedContainer.querySelectorAll('input[type="hidden"][name="CategoryIds"]').length;
+        select.disabled = count >= 3;
+    }
+
     function createTag(id, text) {
         const span = document.createElement('span');
         span.className = 'badge bg-secondary me-1 mb-1 d-inline-flex align-items-center';
@@ -25,6 +31,8 @@
         removeBtn.setAttribute('aria-label', 'Remove');
         removeBtn.addEventListener('click', function () {
             span.remove();
+            // update state after removal
+            updateSelectState();
         });
 
         // Hidden input for model binder
@@ -37,6 +45,9 @@
         span.appendChild(hidden);
 
         selectedContainer.appendChild(span);
+
+        // update state after adding
+        updateSelectState();
     }
 
     select.addEventListener('change', function () {
@@ -52,5 +63,14 @@
         createTag(id, text);
         this.value = '';
     });
+
+    // Observe DOM changes in selectedContainer in case other scripts add/remove items
+    const observer = new MutationObserver(function () {
+        updateSelectState();
+    });
+    observer.observe(selectedContainer, { childList: true, subtree: true });
+
+    // Ensure initial state is correct on load
+    updateSelectState();
 })();
 
