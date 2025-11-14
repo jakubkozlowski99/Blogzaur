@@ -25,6 +25,21 @@
             <div class="blog-card-meta">
                 <span class="blog-author">By @blog.AuthorName</span>
             </div>
+
+            @* Render categories from the DTO (if any) *@
+            @{
+                var categories = blog.Categories ?? new List<string>();
+            }
+            @if (categories.Any())
+            {
+                <div class="blog-card-categories mb-2">
+                    @foreach (var name in categories)
+                    {
+                        <span class="badge bg-secondary me-1">@name</span>
+                    }
+                </div>
+            }
+
             <div class="blog-card-description">
                 @blog.Description
             </div>

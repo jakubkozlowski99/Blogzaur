@@ -31,6 +31,7 @@ namespace Blogzaur.MVC.Controllers
         public async Task<IActionResult> List()
         {
             var blogEntries = await _mediator.Send(new GetAllBlogEntriesQuery());
+
             return View(blogEntries);
         }
 

@@ -16,5 +16,6 @@ namespace Blogzaur.Application.BlogEntry
         public int LikeAmount { get; set; } = 0;
         public bool isEditable { get; set; }
         public bool isLiked { get; set; }
+        public List<string> Categories { get; set; } = new List<string>();
     }
 }
