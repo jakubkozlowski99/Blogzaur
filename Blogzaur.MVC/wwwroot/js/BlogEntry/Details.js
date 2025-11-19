@@ -31,6 +31,32 @@
         return token || null;
     }
 
+    // Detect if returned HTML looks like a login page (simple heuristic)
+    function looksLikeLoginHtml(text) {
+        if (!text || typeof text !== 'string') return false;
+        var lower = text.toLowerCase();
+        return (lower.indexOf('log in') !== -1 && lower.indexOf('password') !== -1)
+            || (lower.indexOf('sign in') !== -1 && lower.indexOf('password') !== -1);
+    }
+
+    function handleAjaxError(xhr) {
+        // If server explicitly responded with 401/403, treat as authentication issue
+        if (xhr && (xhr.status === 401 || xhr.status === 403)) {
+            toastr["warning"]("Log in to like a blogEntry/comment");
+            return;
+        }
+
+        // If server returned HTML (redirected to login), detect login-page markers
+        var resp = xhr && xhr.responseText ? xhr.responseText : null;
+        if (looksLikeLoginHtml(resp)) {
+            toastr["warning"]("Log in to like a blogEntry/comment");
+            return;
+        }
+
+        // Fallback: real server error
+        toastr["error"]("Server error");
+    }
+
     // Refresh only the likeBlogEntry fragment by fetching the current page and extracting the fragment
     function refreshLikeFragment() {
         return $.get(window.location.href).then(function (html) {
@@ -111,8 +137,7 @@
                 }
             },
             error: function (xhr) {
-                // If server redirects to login (302 -> HTML), the above path may return HTML; treat as failure otherwise
-                toastr["error"]("Server error");
+                handleAjaxError(xhr);
             },
             complete: function () {
                 $btn.prop('disabled', false);
@@ -238,8 +263,13 @@ $(document).on('submit', '.comment-like-form', function (e) {
             // reload comments to show updated likes
             LoadComments();
         },
-        error: function () {
-            toastr["error"]("Server error");
+        error: function (xhr) {
+            // If this looks like a login redirect or 401/403, show login warning instead of server error
+            if (xhr && (xhr.status === 401 || xhr.status === 403) || (xhr.responseText && typeof xhr.responseText === 'string' && looksLikeLoginHtml(xhr.responseText))) {
+                toastr["warning"]("Log in to give a like");
+            } else {
+                toastr["error"]("Server error");
+            }
         },
         complete: function () {
             $btn.prop('disabled', false);

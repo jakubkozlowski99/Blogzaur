@@ -13,6 +13,8 @@ namespace Blogzaur.Application.BlogEntry
         public string Description { get; set; } = default!;
         public string Content { get; set; } = default!;
         public string AuthorName { get; set; } = default!;
+        public DateTime CreatedAt { get; set; }
+        public int Views { get; set; } = 0; 
         public int LikeAmount { get; set; } = 0;
         public bool isEditable { get; set; }
         public bool isLiked { get; set; }

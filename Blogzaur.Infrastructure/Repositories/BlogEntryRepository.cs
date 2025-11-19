@@ -45,5 +45,14 @@ namespace Blogzaur.Infrastructure.Repositories
         {
             return _likeRepository.CheckIfBlogEntryLikeExists(blogEntryId, userId);
         }
+
+        public async Task IncrementBlogEntryViewCount(int blogEntryId)
+        {
+            await _dbContext.BlogEntries
+                .Where(be => be.Id == blogEntryId)
+                .ForEachAsync(be => be.Views += 1);
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

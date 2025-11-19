@@ -1,4 +1,5 @@
 ﻿@using Blogzaur.Application.Comment.Commands.CreateComment
+@using System.Globalization
 @model Blogzaur.Application.BlogEntry.BlogEntryDto
 
 <head>
@@ -10,7 +11,6 @@
     ViewData["Title"] = "Details";
 }
 
-
 <div class="margin-large">
     <div class="pb-5">
         <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="List">Back to List</a>
@@ -19,43 +19,76 @@
             <a class="btn btn-primary mx-4" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit blog</a>
         }
     </div>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            Author
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AuthorName)
-        </dd>
 
-        @if (ViewBag.CategoryNames != null)
-        {
-            var names = ViewBag.CategoryNames as IEnumerable<string>;
-            if (names!.Any())
-            {
-                <dt class="col-sm-2">Categories</dt>
+    <div class="row">
+        <div class="col-md-9">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
                 <dd class="col-sm-10">
-                    @foreach (var name in names!)
-                    {
-                        <span class="badge bg-secondary me-1">@name</span>
-                    }
+                    @Html.DisplayFor(model => model.Title)
                 </dd>
-            }
-        }
-    </dl>
-</div>
 
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+
+                <dt class="col-sm-2">
+                    Author
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.AuthorName)
+                </dd>
+
+                @if (ViewBag.CategoryNames != null)
+                {
+                    var names = ViewBag.CategoryNames as IEnumerable<string>;
+                    if (names!.Any())
+                    {
+                        <dt class="col-sm-2">Categories</dt>
+                        <dd class="col-sm-10">
+                            @foreach (var name in names!)
+                            {
+                                <span class="badge bg-secondary me-1">@name</span>
+                            }
+                        </dd>
+                    }
+                }
+            </dl>
+        </div>
+
+        <div class="col-md-3">
+            @{
+                var createdProp = Model.GetType().GetProperty("CreatedAt");
+                var createdVal = createdProp?.GetValue(Model);
+                var createdText = "—";
+                if (createdVal is DateTime dt && dt != default)
+                {
+                    // Force English formatting (en-US)
+                    createdText = dt.ToString("f", CultureInfo.GetCultureInfo("en-US"));
+                }
+
+                var viewsProp = Model.GetType().GetProperty("Views");
+                var viewsVal = viewsProp?.GetValue(Model);
+                var viewsText = "0";
+                if (viewsVal is int vi)
+                {
+                    viewsText = vi.ToString();
+                }
+            }
+
+            <div class="mb-2 small text-muted">Created</div>
+            <div class="mb-3" style="font-size:0.95rem;">@createdText</div>
+
+            <div class="mb-2 small text-muted">Views</div>
+            <div style="font-size:0.95rem;">@viewsText</div>
+        </div>
+    </div>
+</div>
 
 <div class="margin-large">
     <hr />
@@ -81,7 +114,7 @@
             </form>
         }
     </div>
-    <hr /> 
+    <hr />
 </div>
 
 <div class="margin-large">

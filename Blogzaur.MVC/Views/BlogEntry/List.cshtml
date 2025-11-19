@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Blogzaur.Application.BlogEntry.BlogEntryDto>
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Blog List";
@@ -18,7 +19,7 @@
 <div class="blog-grid">
     @foreach (var blog in Model)
     {
-        <div class="blog-card">
+        <div class="blog-card" style="min-height:400px;">
             <div class="blog-card-header">
                 <span class="blog-title">@blog.Title</span>
             </div>
@@ -26,7 +27,6 @@
                 <span class="blog-author">By @blog.AuthorName</span>
             </div>
 
-            @* Render categories from the DTO (if any) *@
             @{
                 var categories = blog.Categories ?? new List<string>();
             }
@@ -39,6 +39,42 @@
                     }
                 </div>
             }
+
+            @{
+                string createdText = "—";
+                var createdProp = blog?.GetType().GetProperty("CreatedAt");
+                var createdVal = createdProp?.GetValue(blog);
+                if (createdVal is DateTime cdt && cdt != default)
+                {
+                    createdText = cdt.ToString("f", CultureInfo.GetCultureInfo("en-US"));
+                }
+                else if (createdVal != null)
+                {
+                    createdText = createdVal.ToString();
+                }
+
+                string viewsText = "0";
+                var viewsProp = blog?.GetType().GetProperty("Views");
+                var viewsVal = viewsProp?.GetValue(blog);
+                if (viewsVal is int vi)
+                {
+                    viewsText = vi.ToString();
+                }
+                else if (viewsVal != null)
+                {
+                    viewsText = viewsVal.ToString();
+                }
+            }
+
+            <div class="blog-card-stats mb-2">
+                <div class="small text-muted">Created</div>
+                <div class="small" style="font-size:0.95rem;">@createdText</div>
+
+                <div class="small text-muted mt-2">Views</div>
+                <div class="small" style="font-size:0.95rem;">@viewsText</div>
+            </div>
+
+            <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
 
             <div class="blog-card-description">
                 @blog.Description

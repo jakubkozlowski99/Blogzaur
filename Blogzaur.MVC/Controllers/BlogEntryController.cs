@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Blogzaur.Application.BlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
 using Blogzaur.Application.BlogEntry.Commands.EditBlogEntry;
+using Blogzaur.Application.BlogEntry.Commands.IncrementBlogEntryViewCount;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
 using Blogzaur.Application.BlogEntryCategory.Queries.GetBlogEntryCategories;
-using Blogzaur.Application.Category.Queries;
 using Blogzaur.Application.Category.Queries.GetAllCategories;
 using Blogzaur.Application.Category.Queries.GetCategoryById;
 using Blogzaur.Application.Like.Commands.AddBlogEntryLike;
@@ -47,6 +46,8 @@ namespace Blogzaur.MVC.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            await _mediator.Send(new IncrementBlogEntryViewCountCommand { BlogEntryId = id });
+
             var dto = await _mediator.Send(new GetBlogEntryByIdQuery(id));
 
             var blogEntryCategories = await _mediator.Send(new GetBlogEntryCategoriesQuery()
