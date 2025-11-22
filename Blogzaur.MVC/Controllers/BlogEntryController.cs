@@ -74,6 +74,7 @@ namespace Blogzaur.MVC.Controllers
             return View(dto);
         }
 
+        [Authorize(Roles = "RegularUser")]
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _mediator.Send(new GetBlogEntryByIdQuery(id));
@@ -99,6 +100,7 @@ namespace Blogzaur.MVC.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "RegularUser")]
         [HttpPost]
         public async Task<IActionResult> Edit(EditBlogEntryCommand command)
         {
