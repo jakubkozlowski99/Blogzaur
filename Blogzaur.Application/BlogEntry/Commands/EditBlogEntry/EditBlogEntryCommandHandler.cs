@@ -2,21 +2,18 @@
 using Blogzaur.Domain.Entities;
 using Blogzaur.Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Blogzaur.Application.BlogEntry.Commands.EditBlogEntry
 {
-    internal class EditBlogEntryCommandHandler : IRequestHandler<EditBlogEntryCommand>
+    public class EditBlogEntryCommandHandler : IRequestHandler<EditBlogEntryCommand>
     {
-
         private readonly IBlogEntryRepository _blogEntryRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserContext _userContext;
+
         public EditBlogEntryCommandHandler(IBlogEntryRepository blogEntryRepository, ICategoryRepository categoryRepository, IUserContext userContext)
         {
             _blogEntryRepository = blogEntryRepository;
@@ -26,16 +23,21 @@ namespace Blogzaur.Application.BlogEntry.Commands.EditBlogEntry
 
         public async Task<Unit> Handle(EditBlogEntryCommand request, CancellationToken cancellationToken)
         {
-            var blogEntry = await _blogEntryRepository.GetById(request.Id);
-
             var user = _userContext.GetCurrentUser();
-
-            var isEditable = user != null && blogEntry.AuthorId == user.Id || user.IsInRole("Moderator");
-
-            if (!isEditable)
+            if (user == null)
             {
                 return Unit.Value;
             }
+
+            var blogEntry = await _blogEntryRepository.GetById(request.Id);
+            if (blogEntry == null)
+            {
+                return Unit.Value;
+            }
+
+            var isEditable = blogEntry.AuthorId == user.Id || user.IsInRole("Moderator");
+            if (!isEditable)
+                return Unit.Value;
 
             // Add new categories (await the existence check)
             foreach (var categoryId in request.CategoryIds)
@@ -66,8 +68,9 @@ namespace Blogzaur.Application.BlogEntry.Commands.EditBlogEntry
 
             blogEntry.Title = request.Title;
             blogEntry.Content = request.Content;
+            blogEntry.Description = request.Description;
 
-            await _blogEntryRepository.Commit();
+            await _blogEntryRepository.Update(blogEntry);
 
             return Unit.Value;
         }

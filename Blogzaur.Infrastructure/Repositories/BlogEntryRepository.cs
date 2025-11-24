@@ -9,7 +9,7 @@ namespace Blogzaur.Infrastructure.Repositories
     {
         private readonly BlogzaurDbContext _dbContext;
         private readonly ILikeRepository _likeRepository;
-        public BlogEntryRepository(BlogzaurDbContext dbContext, ILikeRepository likeRepository) 
+        public BlogEntryRepository(BlogzaurDbContext dbContext, ILikeRepository likeRepository)
         {
             _dbContext = dbContext;
             _likeRepository = likeRepository;
@@ -51,6 +51,13 @@ namespace Blogzaur.Infrastructure.Repositories
             await _dbContext.BlogEntries
                 .Where(be => be.Id == blogEntryId)
                 .ForEachAsync(be => be.Views += 1);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Update(BlogEntry blogEntry)
+        {
+            _dbContext.BlogEntries.Update(blogEntry);
 
             await _dbContext.SaveChangesAsync();
         }

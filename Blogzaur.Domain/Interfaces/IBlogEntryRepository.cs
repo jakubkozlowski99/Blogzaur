@@ -15,5 +15,6 @@ namespace Blogzaur.Domain.Interfaces
         Task<BlogEntry> GetById(int id);
         public bool HasUserLiked(int blogEntryId, string userId);
         Task IncrementBlogEntryViewCount(int blogEntryId);
+        Task Update(BlogEntry blogEntry);
     }
 }

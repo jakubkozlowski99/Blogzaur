@@ -21,5 +21,6 @@ namespace Blogzaur.Domain.Entities
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public int Views { get; set; } = 0;
         public int LikeAmount { get; set; } = 0;
+        public ICollection<BlogEntryCategory> BlogEntryCategories { get; set; } = new List<BlogEntryCategory>();
     }
 }

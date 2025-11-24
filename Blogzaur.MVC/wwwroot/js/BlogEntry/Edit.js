@@ -66,7 +66,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // existing Edit.js logic: pre-populate contenteditable from hidden Content field
     var contentDiv = document.querySelector('.form-control.content[contenteditable="true"]');
     var hiddenInput = document.querySelector('input[type="hidden"][name="Content"]');
-    if (contentDiv && hiddenInput && hiddenInput.value) {
-        contentDiv.innerHTML = hiddenInput.value;
+    if (contentDiv && hiddenInput) {
+        if (hiddenInput.value) {
+            contentDiv.innerHTML = hiddenInput.value;
+        }
+
+        // attach submit handler to the form that contains the editor
+        var form = contentDiv.closest('form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                // copy HTML from the editor into the hidden input so model binding receives it
+                hiddenInput.value = contentDiv.innerHTML;
+            });
+        }
     }
 });
