@@ -43,3 +43,32 @@
 .blog-card-actions {
     text-align: right;
 }
+
+.search-toggle-text {
+    cursor: pointer;
+    color: coral;
+    font-weight: 600; /* a bit thicker */
+    font-family: inherit; /* same font as buttons / surrounding UI */
+    background-color: transparent !important;
+    border: none;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+}
+
+    .search-toggle-text .toggle-arrow {
+        font-size: 0.95em;
+        transition: transform 0.15s ease;
+        display: inline-block;
+    }
+
+    .search-toggle-text.expanded .toggle-arrow {
+        transform: rotate(90deg);
+    }
+
+    .search-toggle-text:hover {
+        text-decoration: none;
+        color: darkorange;
+    }

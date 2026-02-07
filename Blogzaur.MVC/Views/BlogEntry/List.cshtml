@@ -1,20 +1,128 @@
 ﻿@model IEnumerable<Blogzaur.Application.BlogEntry.BlogEntryDto>
 @using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
     ViewData["Title"] = "Blog List";
+    var searchTitle = ViewBag.SearchTitle as string ?? string.Empty;
+    var searchAuthor = ViewBag.SearchAuthor as string ?? string.Empty;
+    var selectedCategories = (ViewBag.SelectedCategories as string[]) ?? Array.Empty<string>();
+    var sortBy = ViewBag.SortBy as string ?? "date_desc";
+    var searchCategories = (ViewBag.SearchCategories as List<SelectListItem>) ?? new List<SelectListItem>();
+
+    // Show the search panel on first render if any filter is active.
+    bool initialSearchVisible = !string.IsNullOrWhiteSpace(searchTitle)
+                                || !string.IsNullOrWhiteSpace(searchAuthor)
+                                || (selectedCategories?.Any() == true)
+                                || (sortBy != null && sortBy != "date_desc");
+    var searchCardStyle = initialSearchVisible ? "display:block;" : "display:none;";
 }
 
 <link rel="stylesheet" href="~/css/list.css" asp-append-version="true" />
+
+<style>
+</style>
 
 <h1 class="margin-large" align="center">Blog Entries</h1>
 
 @if (User.Identity?.IsAuthenticated == true)
 {
     <div class="mb-4" style="text-align:left;">
-        <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="Create">Create New Blog</a>
+        <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Create">Create New Blog</a>
     </div>
 }
+
+<div class="mb-2" id="panelToggleTextContainer" style="display:@(initialSearchVisible ? "none" : "block")">
+    <div class="d-flex justify-content-start">
+        <a id="panelToggleText" class="search-toggle-text small" role="button" aria-expanded="false">
+            <span>Show Search →</span>
+        </a>
+    </div>
+</div>
+
+<div class="mb-4 card border-0 shadow-none p-2 small" id="searchCard" style="@searchCardStyle">
+    <div class="mb-1">
+        <a id="panelHideLink" class="text-decoration-none small" style="cursor:pointer; display:@(initialSearchVisible ? "inline-block" : "none"); color:var(--bs-secondary);">
+            Hide Search ↓
+        </a>
+    </div>
+
+    <form method="get" asp-controller="BlogEntry" asp-action="List" id="searchForm">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label small">Title</label>
+                <input name="searchTitle" value="@searchTitle" class="form-control form-control-sm" placeholder="Search by title..." />
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label small">Sort by</label>
+                <select name="sortBy" class="form-select form-select-sm w-50">
+                    <option value="date_desc" selected="@(sortBy == "date_desc" ? "selected" : null)">Date (newest)</option>
+                    <option value="date_asc" selected="@(sortBy == "date_asc" ? "selected" : null)">Date (oldest)</option>
+                    <option value="views_desc" selected="@(sortBy == "views_desc" ? "selected" : null)">Views (most)</option>
+                    <option value="views_asc" selected="@(sortBy == "views_asc" ? "selected" : null)">Views (least)</option>
+                    <option value="likes_desc" selected="@(sortBy == "likes_desc" ? "selected" : null)">Likes (most)</option>
+                    <option value="likes_asc" selected="@(sortBy == "likes_asc" ? "selected" : null)">Likes (least)</option>
+                </select>
+            </div>
+        </div>
+
+        @* Second line: Author + Categories (swapped) *@
+        <div class="row g-2 align-items-end mt-2">
+            <div class="col-md-5">
+                <label class="form-label small">Author</label>
+                <input name="searchAuthor" value="@searchAuthor" class="form-control form-control-sm" placeholder="Search by author..." />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label small">Categories (max 3)</label>
+                <div class="d-flex">
+                    <select id="categoryAddSelect" class="form-select form-select-sm me-2">
+                        <option value="">Select category...</option>
+                        @foreach (var item in searchCategories)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                    <button id="addCategoryBtn" type="button" class="btn btn-primary btn-sm">Add</button>
+                </div>
+            </div>
+
+            <div class="col-md-3"></div>
+        </div>
+
+        @* Badges row placed below the main rows; aligned under the category column *@
+        <div class="row mt-2">
+            <div class="col-md-5"></div>
+            <div class="col-md-4">
+                <div id="selectedCategoriesContainer" class="mt-1">
+                    @* Pre-render existing selected categories as hidden inputs + removable small badges *@
+                    @foreach (var val in selectedCategories)
+                    {
+                        var text = searchCategories.FirstOrDefault(c => string.Equals(c.Value, val, StringComparison.OrdinalIgnoreCase))?.Text ?? val;
+                        <input type="hidden" name="selectedCategories" value="@val" />
+                        <span class="badge bg-secondary me-1 selected-category small" data-value="@val">
+                            @text
+                            <button type="button" class="btn-close btn-close-white btn-sm ms-2 remove-selected-category" aria-label="Remove" data-value="@val"></button>
+                        </span>
+                    }
+                </div>
+                <div id="categoryWarning" class="form-text text-danger mt-1" style="display:none; font-size:0.85rem;">You can add up to 3 categories.</div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+        @* Third line: Search and Clear buttons (moved to the left) *@
+        <div class="row g-2 align-items-start mt-2">
+            <div class="col-md-5 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                <a id="clearBtn" class="btn btn-primary btn-sm" href="@Url.Action("List", "BlogEntry")">Clear</a>
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-3"></div>
+        </div>
+    </form>
+</div>
 
 <div class="blog-grid">
     @foreach (var blog in Model)
@@ -82,10 +190,14 @@
             <div class="blog-card-actions">
                 @if (blog.isEditable)
                 {
-                    <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@blog.Id">Edit</a>
+                    <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@blog.Id">Edit</a>
                 }
-                <a class="btn btn-primary" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@blog.Id">View</a>
+                <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@blog.Id">View</a>
             </div>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/BlogEntry/List.js" asp-append-version="true"></script>
+}

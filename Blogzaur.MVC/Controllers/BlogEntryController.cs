@@ -27,9 +27,77 @@ namespace Blogzaur.MVC.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> List()
+        // Added searchAuthor parameter and exposed it to the view.
+        public async Task<IActionResult> List(string? searchTitle, string? searchAuthor, string[]? selectedCategories, string? sortBy)
         {
-            var blogEntries = await _mediator.Send(new GetAllBlogEntriesQuery());
+            // load all blog entries (existing application query)
+            var blogEntries = (await _mediator.Send(new GetAllBlogEntriesQuery())).ToList();
+
+            // load categories for the search droplist (values are category IDs)
+            var searchSelectItems = await GetAllCategories();
+
+            // expose UI state so the view can rehydrate selected values
+            ViewBag.SearchCategories = searchSelectItems;
+            ViewBag.SelectedCategories = selectedCategories ?? Array.Empty<string>();
+            ViewBag.SearchTitle = searchTitle ?? string.Empty;
+            ViewBag.SearchAuthor = searchAuthor ?? string.Empty;
+            ViewBag.SortBy = sortBy ?? "date_desc";
+
+            // filter by title (case-insensitive, contains)
+            if (!string.IsNullOrWhiteSpace(searchTitle))
+            {
+                var normalized = searchTitle.Trim();
+                blogEntries = blogEntries
+                    .Where(b => !string.IsNullOrEmpty(b.Title) &&
+                                b.Title.Contains(normalized, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // filter by author name (case-insensitive, contains)
+            if (!string.IsNullOrWhiteSpace(searchAuthor))
+            {
+                var normalizedAuthor = searchAuthor.Trim();
+                blogEntries = blogEntries
+                    .Where(b => !string.IsNullOrEmpty(b.AuthorName) &&
+                                b.AuthorName.Contains(normalizedAuthor, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // filter by selected category ids (map ids -> names because BlogEntryDto.Categories holds names)
+            if (selectedCategories?.Any() == true)
+            {
+                // build set of category names from the select items; fall back to the raw value if not found
+                var selectedCategoryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var val in selectedCategories)
+                {
+                    var item = searchSelectItems.FirstOrDefault(s => string.Equals(s.Value, val, StringComparison.OrdinalIgnoreCase));
+                    if (item != null && !string.IsNullOrEmpty(item.Text))
+                    {
+                        selectedCategoryNames.Add(item.Text);
+                    }
+                    else
+                    {   
+                        // if the client somehow sent names instead of ids, accept them too
+                        selectedCategoryNames.Add(val);
+                    }
+                }
+
+                blogEntries = blogEntries
+                    .Where(b => (b.Categories ?? new List<string>()).Any(cat => selectedCategoryNames.Contains(cat)))
+                    .ToList();
+            }
+
+            // sorting
+            blogEntries = (sortBy ?? "date_desc") switch
+            {
+                "date_asc" => blogEntries.OrderBy(b => b.CreatedAt).ToList(),
+                "date_desc" => blogEntries.OrderByDescending(b => b.CreatedAt).ToList(),
+                "views_asc" => blogEntries.OrderBy(b => b.Views).ToList(),
+                "views_desc" => blogEntries.OrderByDescending(b => b.Views).ToList(),
+                "likes_asc" => blogEntries.OrderBy(b => b.LikeAmount).ToList(),
+                "likes_desc" => blogEntries.OrderByDescending(b => b.LikeAmount).ToList(),
+                _ => blogEntries.OrderByDescending(b => b.CreatedAt).ToList(),
+            };
 
             return View(blogEntries);
         }
