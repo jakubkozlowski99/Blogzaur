@@ -16,6 +16,7 @@ namespace Blogzaur.Application.BlogEntry
         public DateTime CreatedAt { get; set; }
         public int Views { get; set; } = 0; 
         public int LikeAmount { get; set; } = 0;
+        public int CommentAmount { get; set; } = 0;
         public bool isEditable { get; set; }
         public bool isLiked { get; set; }
         public List<string> Categories { get; set; } = new List<string>();

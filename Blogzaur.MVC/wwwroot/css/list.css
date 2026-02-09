@@ -5,6 +5,11 @@
     margin: 2rem 0;
 }
 
+.blog-author{
+    font-size: 0.8em;
+    color: #fb8c00;
+}
+
 .blog-card {
     background: #fff8f1;
     border: 1.5px solid #ff9800;
@@ -14,7 +19,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 400px;
+    height: 500px;
     /* Optional: set a max-width for even wider cards */
     /* max-width: 400px; */
 }

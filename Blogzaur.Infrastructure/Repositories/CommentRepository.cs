@@ -35,5 +35,12 @@ namespace Blogzaur.Infrastructure.Repositories
         {
             return _likeRepository.CheckIfCommentLikeExists(commentId, userId);
         }
+
+        public async Task<int> GetBlogEntryCommentAmount(int blogEntryId)
+        {
+            return await _dbContext.Comments
+                .Where(c => c.BlogEntryId == blogEntryId)
+                .CountAsync();
+        }
     }
 }

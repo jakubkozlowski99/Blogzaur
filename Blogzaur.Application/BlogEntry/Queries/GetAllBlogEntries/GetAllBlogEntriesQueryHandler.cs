@@ -8,11 +8,14 @@ namespace Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries
     {
         private readonly IBlogEntryRepository _blogEntryRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
-        public GetAllBlogEntriesQueryHandler(IBlogEntryRepository blogEntryRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public GetAllBlogEntriesQueryHandler(IBlogEntryRepository blogEntryRepository, ICategoryRepository categoryRepository,
+            ICommentRepository commentRepository, IMapper mapper)
         {
             _blogEntryRepository = blogEntryRepository;
             _categoryRepository = categoryRepository;
+            _commentRepository = commentRepository;
             _mapper = mapper;
         }
 
@@ -33,6 +36,8 @@ namespace Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries
                         dto.Categories.Add(category.Name);
                     }
                 }
+
+                dto.CommentAmount = _commentRepository.GetBlogEntryCommentAmount(dto.Id).Result;
             }
 
             return dtos;

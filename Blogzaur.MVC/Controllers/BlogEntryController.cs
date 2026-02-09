@@ -96,6 +96,8 @@ namespace Blogzaur.MVC.Controllers
                 "views_desc" => blogEntries.OrderByDescending(b => b.Views).ToList(),
                 "likes_asc" => blogEntries.OrderBy(b => b.LikeAmount).ToList(),
                 "likes_desc" => blogEntries.OrderByDescending(b => b.LikeAmount).ToList(),
+                "comments_asc" => blogEntries.OrderBy(b => b.CommentAmount).ToList(),
+                "comments_desc" => blogEntries.OrderByDescending(b => b.CommentAmount).ToList(),
                 _ => blogEntries.OrderByDescending(b => b.CreatedAt).ToList(),
             };
 

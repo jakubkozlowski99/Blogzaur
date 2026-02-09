@@ -2,6 +2,10 @@
 @using System.Globalization
 @using Microsoft.AspNetCore.Mvc.Rendering
 
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+
 @{
     ViewData["Title"] = "Blog List";
     var searchTitle = ViewBag.SearchTitle as string ?? string.Empty;
@@ -63,6 +67,8 @@
                     <option value="views_asc" selected="@(sortBy == "views_asc" ? "selected" : null)">Views (least)</option>
                     <option value="likes_desc" selected="@(sortBy == "likes_desc" ? "selected" : null)">Likes (most)</option>
                     <option value="likes_asc" selected="@(sortBy == "likes_asc" ? "selected" : null)">Likes (least)</option>
+                    <option value="comments_desc" selected="@(sortBy == "comments_desc" ? "selected" : null)">Comments (most)</option>
+                    <option value="comments_asc" selected="@(sortBy == "comments_asc" ? "selected" : null)">Comments (least)</option>
                 </select>
             </div>
         </div>
@@ -172,14 +178,42 @@
                 {
                     viewsText = viewsVal.ToString();
                 }
+
+                // Likes parsing: try common property names used in DTOs
+                string likesText = "0";
+                var likesProp = blog?.GetType().GetProperty("LikeAmount")
+                                ?? blog?.GetType().GetProperty("Likes")
+                                ?? blog?.GetType().GetProperty("LikeCount");
+                var likesVal = likesProp?.GetValue(blog);
+                if (likesVal is int li)
+                {
+                    likesText = li.ToString();
+                }
+                else if (likesVal != null)
+                {
+                    likesText = likesVal.ToString();
+                }
+
+                // Comments parsing: try common property names used in DTOs
+                string commentsText = "0";
+                var commentsProp = blog?.GetType().GetProperty("CommentCount")
+                                   ?? blog?.GetType().GetProperty("CommentsCount")
+                                   ?? blog?.GetType().GetProperty("Comments")
+                                   ?? blog?.GetType().GetProperty("CommentAmount");
+                var commentsVal = commentsProp?.GetValue(blog);
+                if (commentsVal is int ci)
+                {
+                    commentsText = ci.ToString();
+                }
+                else if (commentsVal != null)
+                {
+                    commentsText = commentsVal.ToString();
+                }
             }
 
             <div class="blog-card-stats mb-2">
                 <div class="small text-muted">Created</div>
-                <div class="small" style="font-size:0.95rem;">@createdText</div>
-
-                <div class="small text-muted mt-2">Views</div>
-                <div class="small" style="font-size:0.95rem;">@viewsText</div>
+                <div class="small" style="font-size:0.8em;">@createdText</div>
             </div>
 
             <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
@@ -187,12 +221,28 @@
             <div class="blog-card-description">
                 @blog.Description
             </div>
-            <div class="blog-card-actions">
-                @if (blog.isEditable)
-                {
-                    <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@blog.Id">Edit</a>
-                }
-                <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@blog.Id">View</a>
+            <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
+
+            @* Views, Likes and Comments (left) and Actions (right) on the same line *@
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="small text-muted d-flex align-items-center">
+                    <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>
+                    <span class="fw-medium me-3">@viewsText</span>
+
+                    <i class="fa-solid fa-thumbs-up me-2" aria-hidden="true"></i>
+                    <span class="fw-medium me-3">@likesText</span>
+
+                    <i class="fa-solid fa-comment me-2" aria-hidden="true"></i>
+                    <span class="fw-medium">@commentsText</span>
+                </div>
+
+                <div class="blog-card-actions">
+                    @if (blog.isEditable)
+                    {
+                        <a class="btn btn-primary btn-sm me-2" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@blog.Id">Edit</a>
+                    }
+                    <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@blog.Id">Read</a>
+                </div>
             </div>
         </div>
     }
