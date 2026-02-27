@@ -1,0 +1,372 @@
+﻿@using Blogzaur.Application.BlogEntry
+@using System.Globalization
+@model Blogzaur.Application.ApplicationUser.User
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+@{
+    var blogEntries = (ViewBag.UserBlogEntries as List<BlogEntryDto>) ?? new List<BlogEntryDto>();
+
+    int blogsCount = blogEntries.Count;
+
+    int viewsTotal = 0;
+    if (ViewBag.UserBlogEntriesViews != null) int.TryParse(ViewBag.UserBlogEntriesViews.ToString(), out viewsTotal);
+
+    int likesTotal = 0;
+    if (ViewBag.UserBlogEntriesLikes != null) int.TryParse(ViewBag.UserBlogEntriesLikes.ToString(), out likesTotal);
+
+    int commentsTotal = 0;
+    if (ViewBag.UserCommentsCount != null) int.TryParse(ViewBag.UserCommentsCount.ToString(), out commentsTotal);
+
+    var recent = blogEntries
+        .OrderByDescending(b => b.CreatedAt)
+        .Where(b => b != null)
+        .Take(6)
+        .ToList();
+
+    var mostLiked = blogEntries
+        .OrderByDescending(b => b.LikeAmount)
+        .Where(b => b != null)
+        .Take(6)
+        .ToList();
+
+    var mostViewed = blogEntries
+        .OrderByDescending(b => b.Views)
+        .Where(b => b != null)
+        .Take(6)
+        .ToList();
+
+    // Avatar logic
+    string? avatarUrl = null;
+    var avatarProp = Model?.GetType().GetProperty("AvatarUrl");
+    if (avatarProp != null) avatarUrl = avatarProp.GetValue(Model) as string;
+    var initials = !string.IsNullOrWhiteSpace(Model?.Username) ? Model.Username.Trim()[0].ToString().ToUpper() : "?";
+
+    // helper to chunk lists into pages of 3
+    Func<List<BlogEntryDto>, List<List<BlogEntryDto>>> pagesFor = list =>
+    {
+        var pages = new List<List<BlogEntryDto>>();
+        for (int i = 0; i < list.Count; i += 3)
+        {
+            pages.Add(list.Skip(i).Take(3).ToList());
+        }
+        if (pages.Count == 0) pages.Add(new List<BlogEntryDto>()); // ensure at least one page
+        return pages;
+    };
+
+    var recentPages = pagesFor(recent);
+    var likedPages = pagesFor(mostLiked);
+    var viewedPages = pagesFor(mostViewed);
+}
+
+<link rel="stylesheet" href="~/css/list.css" asp-append-version="true" />
+
+<div class="container">
+    <!-- Top row: avatar (left) + user stats (right) -->
+    <div class="row g-4 align-items-start mt-4">
+        <div class="col-md-3 text-center">
+            <div class="avatar-placeholder mx-auto mb-2" role="img" aria-label="User avatar"
+                 style="width:120px;height:120px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f8f9fa;border:1px solid rgba(0,0,0,0.06);">
+                @if (!string.IsNullOrWhiteSpace(avatarUrl))
+                {
+                    <img src="@avatarUrl" alt="@Model.Username avatar" style="max-width:100%;max-height:100%;object-fit:cover;border-radius:6px;" />
+                }
+                else
+                {
+                    <span style="font-size:2.25rem;font-weight:600;color:#333;">@initials</span>
+                }
+            </div>
+
+            <div class="h5 mb-0">@Model.Username</div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card border-0 mb-3">
+                <div class="card-body p-3">
+                    <h5 class="card-title mb-3">User Info</h5>
+
+                    <div class="row text-muted">
+                        <div class="col-sm-4 mb-3">
+                            <div class="small text-uppercase">Blogs published</div>
+                            <div class="fs-5">@blogsCount</div>
+                        </div>
+
+                        <div class="col-sm-4 mb-3">
+                            <div class="small text-uppercase">Comments written</div>
+                            <div class="fs-5">@commentsTotal</div>
+                        </div>
+
+                        <div class="col-sm-4 mb-3">
+                            <div class="small text-uppercase">Total views</div>
+                            <div class="fs-5">@viewsTotal</div>
+                        </div>
+
+                        <div class="col-sm-4 mb-3">
+                            <div class="small text-uppercase">Total likes</div>
+                            <div class="fs-5">@likesTotal</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- NEW: centered full-width area below avatar/stats for carousels -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-10">
+            <div class="mb-4">
+                <h6>Recent blogs</h6>
+                <div class="carousel" id="carousel-recent">
+                    <button class="carousel-arrow carousel-prev" data-target="carousel-recent" aria-label="Prev">&larr;</button>
+                    <div class="carousel-viewport">
+                        @for (int p = 0; p < recentPages.Count; p++)
+                        {
+                            var page = recentPages[p];
+                            <div class="carousel-page @(p == 0 ? "active" : "")">
+                                <div class="row">
+                                    @foreach (var entry in page)
+                                    {
+                                        <div class="col-md-4 mb-3">
+                                            <div class="blog-card p-2 h-100 border">
+                                                <div class="blog-card-header">
+                                                    <span class="blog-title">@entry.Title</span>
+                                                </div>
+
+                                                @{
+                                                    var cats = entry.Categories ?? new List<string>();
+                                                }
+                                                @if (cats.Any())
+                                                {
+                                                    <div class="blog-card-categories mb-2">
+                                                        @foreach (var c in cats.Take(3))
+                                                        {
+                                                            <span class="badge bg-secondary me-1">@c</span>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                <div class="blog-card-stats mb-2">
+                                                    <div class="small text-muted">Created</div>
+                                                    <div class="small" style="font-size:0.8em;">@entry.CreatedAt.ToString("f", CultureInfo.GetCultureInfo("en-US"))</div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div class="small text-muted d-flex align-items-center">
+                                                        <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium me-3">@entry.Views.ToString()</span>
+
+                                                        <i class="fa-solid fa-thumbs-up me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium me-3">@entry.LikeAmount.ToString()</span>
+
+                                                        <i class="fa-solid fa-comment me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium">@entry.CommentAmount.ToString()</span>
+                                                    </div>
+
+                                                    <div class="blog-card-actions">
+                                                        @if (entry.isEditable)
+                                                        {
+                                                            <a class="btn btn-primary btn-sm me-2" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@entry.Id">Edit</a>
+                                                        }
+                                                        <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@entry.Id">Read</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-arrow carousel-next" data-target="carousel-recent" aria-label="Next">&rarr;</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h6>Most liked</h6>
+                <div class="carousel" id="carousel-liked">
+                    <button class="carousel-arrow carousel-prev" data-target="carousel-liked" aria-label="Prev">&larr;</button>
+                    <div class="carousel-viewport">
+                        @for (int p = 0; p < likedPages.Count; p++)
+                        {
+                            var page = likedPages[p];
+                            <div class="carousel-page @(p == 0 ? "active" : "")">
+                                <div class="row">
+                                    @foreach (var entry in page)
+                                    {
+                                        <div class="col-md-4 mb-3">
+                                            <div class="blog-card p-2 h-100 border">
+                                                <div class="blog-card-header">
+                                                    <span class="blog-title">@entry.Title</span>
+                                                </div>
+
+                                                @{
+                                                    var cats = entry.Categories ?? new List<string>();
+                                                }
+                                                @if (cats.Any())
+                                                {
+                                                    <div class="blog-card-categories mb-2">
+                                                        @foreach (var c in cats.Take(3))
+                                                        {
+                                                            <span class="badge bg-secondary me-1">@c</span>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                <div class="blog-card-stats mb-2">
+                                                    <div class="small text-muted">Created</div>
+                                                    <div class="small" style="font-size:0.8em;">@entry.CreatedAt.ToString("f", CultureInfo.GetCultureInfo("en-US"))</div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div class="small text-muted d-flex align-items-center">
+                                                        <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium me-3">@entry.Views.ToString()</span>
+
+                                                        <i class="fa-solid fa-thumbs-up me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium me-3">@entry.LikeAmount.ToString()</span>
+
+                                                        <i class="fa-solid fa-comment me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium">@entry.CommentAmount.ToString()</span>
+                                                    </div>
+
+                                                    <div class="blog-card-actions">
+                                                        @if (entry.isEditable)
+                                                        {
+                                                            <a class="btn btn-primary btn-sm me-2" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@entry.Id">Edit</a>
+                                                        }
+                                                        <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@entry.Id">Read</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-arrow carousel-next" data-target="carousel-liked" aria-label="Next">&rarr;</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h6>Most viewed</h6>
+                <div class="carousel" id="carousel-viewed">
+                    <button class="carousel-arrow carousel-prev" data-target="carousel-viewed" aria-label="Prev">&larr;</button>
+                    <div class="carousel-viewport">
+                        @for (int p = 0; p < viewedPages.Count; p++)
+                        {
+                            var page = viewedPages[p];
+                            <div class="carousel-page @(p == 0 ? "active" : "")">
+                                <div class="row">
+                                    @foreach (var entry in page)
+                                    {
+                                        <div class="col-md-4 mb-3">
+                                            <div class="blog-card p-2 h-100 border">
+                                                <div class="blog-card-header">
+                                                    <span class="blog-title">@entry.Title</span>
+                                                </div>
+
+                                                @{
+                                                    var cats = entry.Categories ?? new List<string>();
+                                                }
+                                                @if (cats.Any())
+                                                {
+                                                    <div class="blog-card-categories mb-2">
+                                                        @foreach (var c in cats.Take(3))
+                                                        {
+                                                            <span class="badge bg-secondary me-1">@c</span>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                <div class="blog-card-stats mb-2">
+                                                    <div class="small text-muted">Created</div>
+                                                    <div class="small" style="font-size:0.8em;">@entry.CreatedAt.ToString("f", CultureInfo.GetCultureInfo("en-US"))</div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div class="small text-muted d-flex align-items-center">
+                                                        <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium me-3">@entry.Views.ToString()</span>
+
+                                                        <i class="fa-solid fa-thumbs-up me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium me-3">@entry.LikeAmount.ToString()</span>
+
+                                                        <i class="fa-solid fa-comment me-2" aria-hidden="true"></i>
+                                                        <span class="fw-medium">@entry.CommentAmount.ToString()</span>
+                                                    </div>
+
+                                                    <div class="blog-card-actions">
+                                                        @if (entry.isEditable)
+                                                        {
+                                                            <a class="btn btn-primary btn-sm me-2" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@entry.Id">Edit</a>
+                                                        }
+                                                        <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@entry.Id">Read</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-arrow carousel-next" data-target="carousel-viewed" aria-label="Next">&rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .carousel { display:flex; align-items:center; gap:0.5rem; }
+    .carousel-viewport { flex:1; overflow:hidden; }
+    .carousel-page { display:none; }
+    .carousel-page.active { display:block; }
+    .carousel-arrow { background:transparent;border:1px solid #ddd;padding:6px 10px;border-radius:4px; cursor:pointer; }
+
+    /* Match the lighter orange card from list.css so inline override won't make cards too dark */
+    .blog-card {
+        background: #fff7ed; /* light, warm orange */
+        color: #4b3f1c;
+        border: 1.5px solid #ff9800;
+    }
+
+    .text-truncate { max-height:3.6rem; overflow:hidden; }
+    @@media (max-width:767px) {
+        .col-md-4 { flex:0 0 100%; max-width:100%; }
+    }
+</style>
+
+<script>
+    (function () {
+        function init(id) {
+            var root = document.getElementById(id);
+            if (!root) return;
+            var pages = root.querySelectorAll('.carousel-page');
+            var current = 0;
+            var prev = root.querySelector('.carousel-prev');
+            var next = root.querySelector('.carousel-next');
+            function show(idx) {
+                pages.forEach(function (p, i) { p.classList.toggle('active', i === idx); });
+                current = idx;
+                if (prev) prev.disabled = (current === 0);
+                if (next) next.disabled = (current >= pages.length - 1);
+            }
+            if (prev) prev.addEventListener('click', function () { show(Math.max(0, current - 1)); });
+            if (next) next.addEventListener('click', function () { show(Math.min(pages.length - 1, current + 1)); });
+            show(0);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            init('carousel-recent');
+            init('carousel-liked');
+            init('carousel-viewed');
+        });
+    })();
+</script>
+

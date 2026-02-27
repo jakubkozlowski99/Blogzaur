@@ -5,9 +5,17 @@
     margin: 2rem 0;
 }
 
-.blog-author{
+.blog-author {
     font-size: 0.8em;
     color: #fb8c00;
+    text-decoration: none;
+    color: inherit;
+    transition: color .12s ease;
+}
+
+.blog-author:hover,
+.blog-author:focus {
+    color: rgba(0, 0, 0, 0.65); /* slightly darker on hover (adjust as needed) */
 }
 
 .blog-card {

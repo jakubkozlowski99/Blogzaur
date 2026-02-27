@@ -13,7 +13,7 @@ namespace Blogzaur.Application.BlogEntry
         public string Description { get; set; } = default!;
         public string Content { get; set; } = default!;
         public string AuthorName { get; set; } = default!;
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int Views { get; set; } = 0; 
         public int LikeAmount { get; set; } = 0;
         public int CommentAmount { get; set; } = 0;

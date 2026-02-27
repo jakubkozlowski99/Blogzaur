@@ -1,0 +1,120 @@
+﻿@using System.Globalization
+@model Blogzaur.Application.BlogEntry.BlogEntryDto
+
+<head>
+    <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<div class="blog-card" style="min-height:400px;">
+    <div class="blog-card-header">
+        <span class="blog-title">@Model.Title</span>
+    </div>
+    <div class="blog-card-meta">
+        <a asp-controller="User" asp-action="Profile" asp-route-username="@Model.AuthorName" class="blog-author">By @Model.AuthorName</a>
+    </div>
+
+    @{
+        var categories = Model.Categories ?? new List<string>();
+    }
+    @if (categories.Any())
+    {
+        <div class="blog-card-categories mb-2">
+            @foreach (var name in categories)
+            {
+                <span class="badge bg-secondary me-1">@name</span>
+            }
+        </div>
+    }
+
+    @{
+        string createdText = "—";
+        var createdProp = Model?.GetType().GetProperty("CreatedAt");
+        var createdVal = createdProp?.GetValue(Model);
+        if (createdVal is DateTime cdt && cdt != default)
+        {
+            createdText = cdt.ToString("f", CultureInfo.GetCultureInfo("en-US"));
+        }
+        else if (createdVal != null)
+        {
+            createdText = createdVal.ToString();
+        }
+
+        string viewsText = "0";
+        var viewsProp = Model?.GetType().GetProperty("Views");
+        var viewsVal = viewsProp?.GetValue(Model);
+        if (viewsVal is int vi)
+        {
+            viewsText = vi.ToString();
+        }
+        else if (viewsVal != null)
+        {
+            viewsText = viewsVal.ToString();
+        }
+
+        // Likes parsing: try common property names used in DTOs
+        string likesText = "0";
+        var likesProp = Model?.GetType().GetProperty("LikeAmount")
+        ?? Model?.GetType().GetProperty("Likes")
+        ?? Model?.GetType().GetProperty("LikeCount");
+        var likesVal = likesProp?.GetValue(Model);
+        if (likesVal is int li)
+        {
+            likesText = li.ToString();
+        }
+        else if (likesVal != null)
+        {
+            likesText = likesVal.ToString();
+        }
+
+        // Comments parsing: try common property names used in DTOs
+        string commentsText = "0";
+        var commentsProp = Model?.GetType().GetProperty("CommentCount")
+        ?? Model?.GetType().GetProperty("CommentsCount")
+        ?? Model?.GetType().GetProperty("Comments")
+        ?? Model?.GetType().GetProperty("CommentAmount");
+        var commentsVal = commentsProp?.GetValue(Model);
+        if (commentsVal is int ci)
+        {
+            commentsText = ci.ToString();
+        }
+        else if (commentsVal != null)
+        {
+            commentsText = commentsVal.ToString();
+        }
+    }
+
+    <div class="blog-card-stats mb-2">
+        <div class="small text-muted">Created</div>
+        <div class="small" style="font-size:0.8em;">@createdText</div>
+    </div>
+
+    <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
+
+    <div class="blog-card-description">
+        @Model.Description
+    </div>
+    <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
+
+    @* Views, Likes and Comments (left) and Actions (right) on the same line *@
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="small text-muted d-flex align-items-center">
+            <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>
+            <span class="fw-medium me-3">@viewsText</span>
+
+            <i class="fa-solid fa-thumbs-up me-2" aria-hidden="true"></i>
+            <span class="fw-medium me-3">@likesText</span>
+
+            <i class="fa-solid fa-comment me-2" aria-hidden="true"></i>
+            <span class="fw-medium">@commentsText</span>
+        </div>
+
+        <div class="blog-card-actions">
+            @if (Model.isEditable)
+            {
+                <a class="btn btn-primary btn-sm me-2" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+            }
+            <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@Model.Id">Read</a>
+        </div>
+    </div>
+</div>

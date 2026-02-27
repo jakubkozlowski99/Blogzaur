@@ -33,6 +33,12 @@ namespace Blogzaur.Infrastructure.Repositories
             => await _dbContext.BlogEntries
                 .FirstAsync(x => x.Id == id);
 
+        public async Task<List<BlogEntry>> GetByUserId(string userId)
+            => await _dbContext.BlogEntries
+                .Where(be => be.AuthorId == userId)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+
         public int GetBlogEntryLikeAmount(int blogEntryId)
         {
             return _dbContext.BlogEntries

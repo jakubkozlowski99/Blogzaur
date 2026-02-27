@@ -41,7 +41,7 @@
                     Author
                 </dt>
                 <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.AuthorName)
+                    <a asp-controller="User" asp-action="Profile" asp-route-username="@Model.AuthorName" class="author-link">@Html.DisplayFor(model => model.AuthorName)</a>
                 </dd>
 
                 @if (ViewBag.CategoryNames != null)

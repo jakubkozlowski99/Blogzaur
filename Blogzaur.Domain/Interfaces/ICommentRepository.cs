@@ -13,5 +13,6 @@ namespace Blogzaur.Domain.Interfaces
         Task<List<Comment>> GetByBlogEntryId(int blogEntryId);
         public bool HasUserLiked(int commentId, string userId);
         Task<int> GetBlogEntryCommentAmount(int blogEntryId);
+        Task<List<Comment>> GetCommentsByUserId(string userId);
     }
 }

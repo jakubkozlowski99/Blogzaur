@@ -13,6 +13,7 @@ namespace Blogzaur.Application.ApplicationUser
     {
         User? GetCurrentUser();
         User? GetUserById(string id);
+        User? GetUserByUsername(string username);
     }
 
     public class UserContext : IUserContext
@@ -50,6 +51,19 @@ namespace Blogzaur.Application.ApplicationUser
         public User? GetUserById(string id)
         {
             var user = _userManager.FindByIdAsync(id).Result;
+
+            if (user == null)
+            {
+                return new User("0", "User does not exist", "", new List<string>());
+            }
+
+            var roles = _userManager.GetRolesAsync(user).Result;
+            return new User(user.Id, user.UserName!, user.Email!, roles);
+        }
+
+        public User? GetUserByUsername(string username)
+        {
+            var user = _userManager.FindByNameAsync(username).Result;
 
             if (user == null)
             {

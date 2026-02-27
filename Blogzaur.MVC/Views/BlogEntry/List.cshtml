@@ -97,7 +97,6 @@
             <div class="col-md-3"></div>
         </div>
 
-        @* Badges row placed below the main rows; aligned under the category column *@
         <div class="row mt-2">
             <div class="col-md-5"></div>
             <div class="col-md-4">
@@ -133,118 +132,7 @@
 <div class="blog-grid">
     @foreach (var blog in Model)
     {
-        <div class="blog-card" style="min-height:400px;">
-            <div class="blog-card-header">
-                <span class="blog-title">@blog.Title</span>
-            </div>
-            <div class="blog-card-meta">
-                <span class="blog-author">By @blog.AuthorName</span>
-            </div>
-
-            @{
-                var categories = blog.Categories ?? new List<string>();
-            }
-            @if (categories.Any())
-            {
-                <div class="blog-card-categories mb-2">
-                    @foreach (var name in categories)
-                    {
-                        <span class="badge bg-secondary me-1">@name</span>
-                    }
-                </div>
-            }
-
-            @{
-                string createdText = "—";
-                var createdProp = blog?.GetType().GetProperty("CreatedAt");
-                var createdVal = createdProp?.GetValue(blog);
-                if (createdVal is DateTime cdt && cdt != default)
-                {
-                    createdText = cdt.ToString("f", CultureInfo.GetCultureInfo("en-US"));
-                }
-                else if (createdVal != null)
-                {
-                    createdText = createdVal.ToString();
-                }
-
-                string viewsText = "0";
-                var viewsProp = blog?.GetType().GetProperty("Views");
-                var viewsVal = viewsProp?.GetValue(blog);
-                if (viewsVal is int vi)
-                {
-                    viewsText = vi.ToString();
-                }
-                else if (viewsVal != null)
-                {
-                    viewsText = viewsVal.ToString();
-                }
-
-                // Likes parsing: try common property names used in DTOs
-                string likesText = "0";
-                var likesProp = blog?.GetType().GetProperty("LikeAmount")
-                                ?? blog?.GetType().GetProperty("Likes")
-                                ?? blog?.GetType().GetProperty("LikeCount");
-                var likesVal = likesProp?.GetValue(blog);
-                if (likesVal is int li)
-                {
-                    likesText = li.ToString();
-                }
-                else if (likesVal != null)
-                {
-                    likesText = likesVal.ToString();
-                }
-
-                // Comments parsing: try common property names used in DTOs
-                string commentsText = "0";
-                var commentsProp = blog?.GetType().GetProperty("CommentCount")
-                                   ?? blog?.GetType().GetProperty("CommentsCount")
-                                   ?? blog?.GetType().GetProperty("Comments")
-                                   ?? blog?.GetType().GetProperty("CommentAmount");
-                var commentsVal = commentsProp?.GetValue(blog);
-                if (commentsVal is int ci)
-                {
-                    commentsText = ci.ToString();
-                }
-                else if (commentsVal != null)
-                {
-                    commentsText = commentsVal.ToString();
-                }
-            }
-
-            <div class="blog-card-stats mb-2">
-                <div class="small text-muted">Created</div>
-                <div class="small" style="font-size:0.8em;">@createdText</div>
-            </div>
-
-            <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
-
-            <div class="blog-card-description">
-                @blog.Description
-            </div>
-            <hr class="blog-card-divider" style="border:none;border-top:2px solid rgba(0,0,0,0.12);margin:0.5rem 0 1rem;width:100%;" />
-
-            @* Views, Likes and Comments (left) and Actions (right) on the same line *@
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div class="small text-muted d-flex align-items-center">
-                    <i class="fa-solid fa-eye me-2" aria-hidden="true"></i>
-                    <span class="fw-medium me-3">@viewsText</span>
-
-                    <i class="fa-solid fa-thumbs-up me-2" aria-hidden="true"></i>
-                    <span class="fw-medium me-3">@likesText</span>
-
-                    <i class="fa-solid fa-comment me-2" aria-hidden="true"></i>
-                    <span class="fw-medium">@commentsText</span>
-                </div>
-
-                <div class="blog-card-actions">
-                    @if (blog.isEditable)
-                    {
-                        <a class="btn btn-primary btn-sm me-2" asp-controller="BlogEntry" asp-action="Edit" asp-route-id="@blog.Id">Edit</a>
-                    }
-                    <a class="btn btn-primary btn-sm" asp-controller="BlogEntry" asp-action="Details" asp-route-id="@blog.Id">Read</a>
-                </div>
-            </div>
-        </div>
+        <partial name="_BlogEntryCard" model=@blog />
     }
 </div>
 

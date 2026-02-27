@@ -42,5 +42,13 @@ namespace Blogzaur.Infrastructure.Repositories
                 .Where(c => c.BlogEntryId == blogEntryId)
                 .CountAsync();
         }
+
+        public async Task<List<Comment>> GetCommentsByUserId(string userId)
+        {
+            return await _dbContext.Comments
+                .Where(c => c.AuthorId == userId)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+        }
     }
 }

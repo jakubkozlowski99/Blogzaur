@@ -13,6 +13,7 @@ namespace Blogzaur.Domain.Interfaces
         Task Create(BlogEntry blogEntry);
         Task<List<BlogEntry>> GetAll();
         Task<BlogEntry> GetById(int id);
+        Task<List<BlogEntry>> GetByUserId(string userId);
         public bool HasUserLiked(int blogEntryId, string userId);
         Task IncrementBlogEntryViewCount(int blogEntryId);
         Task Update(BlogEntry blogEntry);

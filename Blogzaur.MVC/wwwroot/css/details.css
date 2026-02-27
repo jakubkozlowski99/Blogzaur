@@ -1,4 +1,17 @@
-﻿.comment-input {
+﻿.author-link {
+    color: #000;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color .12s ease, text-decoration .12s ease;
+}
+
+    .author-link:hover,
+    .author-link:focus {
+        text-decoration: underline;
+        color: #000;
+    }
+
+.comment-input {
     height: 200px !important;
 }
 
