@@ -1,8 +1,56 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var trendingLiked = (ViewBag.TrendingMostLiked as List<Blogzaur.Application.BlogEntry.BlogEntryDto>) ?? new List<Blogzaur.Application.BlogEntry.BlogEntryDto>();
+    var trendingViewed = (ViewBag.TrendingMostViewed as List<Blogzaur.Application.BlogEntry.BlogEntryDto>) ?? new List<Blogzaur.Application.BlogEntry.BlogEntryDto>();
 }
 
+<link rel="stylesheet" href="~/css/list.css" asp-append-version="true" />
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to Blogzaur</h1>
+
+    <div class="mt-4 mx-auto" style="max-width:780px; text-align:left;">
+        <p class="lead">Welcome to a space where your voice matters.</p>
+
+        <p>
+            Create and publish your own blog posts with ease, share your thoughts with the world, and build your personal corner of the internet.
+            Explore a diverse collection of blogs from other writers, discover new perspectives, and stay inspired every day.
+        </p>
+
+        <p>
+            Like the posts that resonate with you, join the conversation through comments, and connect with a growing community of passionate storytellers.
+        </p>
+
+        <p class="fw-bold">Write. Read. Connect.</p>
+    </div>
+
+    <div class="container mt-5">
+        <h3 class="mb-3">Currently trending blogs</h3>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="mb-3">Most liked</h5>
+            </div>
+
+            @foreach (var entry in trendingLiked)
+            {
+                <div class="col-md-4 mb-3">
+                    <partial name="_BlogEntryCard" model=@entry />
+                </div>
+            }
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="mb-3">Most viewed</h5>
+            </div>
+
+            @foreach (var entry in trendingViewed)
+            {
+                <div class="col-md-4 mb-3">
+                    <partial name="_BlogEntryCard" model=@entry />
+                </div>
+            }
+        </div>
+    </div>
 </div>
