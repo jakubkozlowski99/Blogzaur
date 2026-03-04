@@ -20,6 +20,8 @@ namespace Blogzaur.Application.ApplicationUser
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
+        private const string DefaultAvatar = "/images/default-avatar.jpg";
+
         public UserContext(IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -45,7 +47,13 @@ namespace Blogzaur.Application.ApplicationUser
             var email = user.FindFirst(c => c.Type == ClaimTypes.Email)!.Value;
             var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
 
-            return new User(id, username, email, roles);
+            var result = new User(id, username, email, roles);
+
+            // read avatar claim from the principal (if present) else fallback to default
+            var avatarFromPrincipal = user.FindFirst("avatar_url")?.Value;
+            result.AvatarUrl = !string.IsNullOrEmpty(avatarFromPrincipal) ? avatarFromPrincipal : DefaultAvatar;
+
+            return result;
         }
 
         public User? GetUserById(string id)
@@ -57,8 +65,15 @@ namespace Blogzaur.Application.ApplicationUser
                 return new User("0", "User does not exist", "", new List<string>());
             }
 
-            var roles = _userManager.GetRolesAsync(user).Result;
-            return new User(user.Id, user.UserName!, user.Email!, roles);
+            var roles = GetRoles(user);
+            var result = new User(user.Id, user.UserName!, user.Email!, roles);
+
+            // read avatar claim from store, fallback to default
+            var claims = _userManager.GetClaimsAsync(user).Result;
+            var avatarClaim = claims.FirstOrDefault(c => c.Type == "avatar_url")?.Value;
+            result.AvatarUrl = !string.IsNullOrEmpty(avatarClaim) ? avatarClaim : DefaultAvatar;
+
+            return result;
         }
 
         public User? GetUserByUsername(string username)
@@ -70,8 +85,28 @@ namespace Blogzaur.Application.ApplicationUser
                 return new User("0", "User does not exist", "", new List<string>());
             }
 
-            var roles = _userManager.GetRolesAsync(user).Result;
-            return new User(user.Id, user.UserName!, user.Email!, roles);
+            var roles = GetRoles(user);
+            var result = new User(user.Id, user.UserName!, user.Email!, roles);
+
+            // read avatar claim from store, fallback to default
+            var claims = _userManager.GetClaimsAsync(user).Result;
+            var avatarClaim = claims.FirstOrDefault(c => c.Type == "avatar_url")?.Value;
+            result.AvatarUrl = !string.IsNullOrEmpty(avatarClaim) ? avatarClaim : DefaultAvatar;
+
+            return result;
+        }
+
+        // helper to avoid blocking/exception surface if roles call fails
+        private IEnumerable<string> GetRoles(IdentityUser user)
+        {
+            try
+            {
+                return _userManager.GetRolesAsync(user).Result;
+            }
+            catch
+            {
+                return new List<string>();
+            }
         }
     }
 }
