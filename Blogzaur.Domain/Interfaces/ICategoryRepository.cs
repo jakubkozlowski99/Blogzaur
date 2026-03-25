@@ -15,5 +15,8 @@ namespace Blogzaur.Domain.Interfaces
         Task<List<Entities.BlogEntryCategory>> GetBlogEntryCategories(int blogEntryId);
         Task AddBlogEntryCategory(Entities.BlogEntryCategory blogEntryCategory);
         Task RemoveBlogEntryCategory(Entities.BlogEntryCategory blogEntryCategory);
+        Task AddCategory(Entities.Category category);
+        Task EditCategory (Entities.Category category);
+        Task RemoveCategory (int id);
     }
 }

@@ -16,8 +16,8 @@ namespace Blogzaur.Infrastructure.Repositories
         public async Task Commit()
             => await _dbContext.SaveChangesAsync();
 
-        public Task<Category?> GetById(int id)
-            => _dbContext.Categories
+        public async Task<Category?> GetById(int id)
+            => await _dbContext.Categories
                 .FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<List<Category>> GetAllCategories()
@@ -45,5 +45,31 @@ namespace Blogzaur.Infrastructure.Repositories
         public async Task<BlogEntryCategory?> GetBlogEntryCategory(int blogEntryId, int categoryId)
             => await _dbContext.BlogEntryCategories
                 .FirstOrDefaultAsync(bec => bec.BlogEntryId == blogEntryId && bec.CategoryId == categoryId);
+
+        public async Task AddCategory(Category category)
+        {
+            _dbContext.Categories.Add(category);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task EditCategory(Category category)
+        {
+            var existingCategory = await _dbContext.Categories.FindAsync(category.Id);
+            if (existingCategory != null)
+            {
+                existingCategory.Name = category.Name;
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveCategory(int id)
+        {
+            var existingCategory = await _dbContext.Categories.FindAsync(id);
+            if (existingCategory != null)
+            {
+                _dbContext.Categories.Remove(existingCategory);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

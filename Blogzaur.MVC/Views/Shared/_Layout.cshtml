@@ -39,6 +39,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark @(controller == "Home" && action == "Privacy" ? "text-decoration-underline" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+                        @* Show Admin Panel link only to users in the ADMIN role *@
+                        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark @(controller == "Admin" && action == "Panel" ? "text-decoration-underline" : "")" asp-area="" asp-controller="Admin" asp-action="Panel">Admin Panel</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

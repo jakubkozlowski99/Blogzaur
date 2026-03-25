@@ -12,7 +12,8 @@ namespace Blogzaur.Application.Mappings
     {
         public CategoryMappingProfile() 
         { 
-            CreateMap<Domain.Entities.Category, CategoryDto>();
+            CreateMap<Domain.Entities.Category, CategoryDto>()
+                .ReverseMap();
         }
     }
 }

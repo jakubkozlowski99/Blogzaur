@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Blogzaur.Application.ApplicationUser;
 using Blogzaur.Application.BlogEntry.Commands.CreateBlogEntry;
+using Blogzaur.Application.Category.Commands.CreateCategory;
 using Blogzaur.Application.Comment.Commands.CreateComment;
 using Blogzaur.Application.Mappings;
 using Blogzaur.Domain.Interfaces;
@@ -21,7 +22,10 @@ namespace Blogzaur.Application.Extensions
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IUserContext, UserContext>();
+
             services.AddMediatR(typeof(CreateBlogEntryCommand));
+            services.AddMediatR(typeof(CreateCommentCommand));
+            services.AddMediatR(typeof(CreateCategoryCommand));
 
             services.AddScoped(provider => new MapperConfiguration(cfg => 
                 {
@@ -39,6 +43,10 @@ namespace Blogzaur.Application.Extensions
                 .AddFluentValidationClientsideAdapters();
 
             services.AddValidatorsFromAssemblyContaining<CreateCommentCommandValidator>()
+                .AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+
+            services.AddValidatorsFromAssemblyContaining<CreateCategoryCommandValidator>()
                 .AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
         }

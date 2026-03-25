@@ -1,0 +1,39 @@
+﻿@using Blogzaur.Application.Category.Commands.EditCategory
+@model EditCategoryCommand
+
+@* Modal id and input ids are made unique using Model.Id so multiple modals can coexist without JS. *@
+<div class="modal fade" id="editCategoryModal_@Model.Id" tabindex="-1" aria-labelledby="editCategoryModalLabel_@Model.Id" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Admin" asp-action="EditCategory" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Id" id="Id_@Model.Id" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel_@Model.Id">Edit category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label for="Name_@Model.Id" class="form-label">Category name</label>
+                        <input asp-for="Name" id="Name_@Model.Id" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,28 @@
+﻿
+#adminTab {
+    width: 100%;
+}
+
+    #adminTab .nav-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%; /* fill the column so all items match */
+        box-sizing: border-box;
+        min-height: 48px; /* equal height for visual balance */
+        padding: 0.6rem 1rem; /* consistent padding */
+        text-align: center;
+        font-weight: 600;
+        white-space: nowrap; /* prevent wrapping */
+    }
+
+        #adminTab .nav-link.active {
+            border-radius: 8px; /* softer active pill */
+        }
+
+@media (max-width: 576px) {
+    #adminTab .nav-link {
+        min-height: 44px;
+        font-weight: 600;
+    }
+}

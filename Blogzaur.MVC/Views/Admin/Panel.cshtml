@@ -1,0 +1,50 @@
+﻿@using Azure.Core
+@using Blogzaur.Application.Category
+@using System.Linq
+@{
+    ViewData["Title"] = "Admin Panel";
+    var categories = ViewBag.Categories as IEnumerable<CategoryDto> ?? Enumerable.Empty<CategoryDto>();
+
+    // Determine which tab should be active. TempData is set by actions that want
+    // to return to a specific tab (e.g. after a redirect).
+    var activeTab = (TempData["ActiveTab"] as string);
+}
+
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="nav nav-pills flex-column" id="adminTab" role="tablist" aria-orientation="vertical">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(activeTab == "users" ? "active" : "")" id="users-tab" data-bs-toggle="pill" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="@(activeTab == "users" ? "true" : "false")">
+                        Users
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(activeTab == "categories" ? "active" : "")" id="categories-tab" data-bs-toggle="pill" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="@(activeTab == "categories" ? "true" : "false")">
+                        Categories
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-9">
+            <div class="tab-content" id="adminTabContent">
+                <div class="tab-pane fade @(activeTab == "users" ? "show active" : "")" id="users" role="tabpanel" aria-labelledby="users-tab">
+                    <!-- Replace with user management UI -->
+                    <h4>Users</h4>
+                    <p>Manage users here.</p>
+                </div>
+
+                <div class="tab-pane fade @(activeTab == "categories" ? "show active" : "")" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+                    <!-- Render the partial when Categories tab is selected -->
+                    @* Pass categories as the model to the partial *@
+                    @await Html.PartialAsync("_ManageCategories", categories)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
