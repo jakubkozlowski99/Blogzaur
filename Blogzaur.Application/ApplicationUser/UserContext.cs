@@ -69,7 +69,7 @@ namespace Blogzaur.Application.ApplicationUser
             var result = new User(user.Id, user.UserName!, user.Email!, roles);
 
             // read avatar claim from store, fallback to default
-            var claims = _userManager.GetClaimsAsync(user).Result;
+            var claims = _userManager.GetClaimsAsync(user).Result ?? Enumerable.Empty<Claim>();
             var avatarClaim = claims.FirstOrDefault(c => c.Type == "avatar_url")?.Value;
             result.AvatarUrl = !string.IsNullOrEmpty(avatarClaim) ? avatarClaim : DefaultAvatar;
 
@@ -89,7 +89,7 @@ namespace Blogzaur.Application.ApplicationUser
             var result = new User(user.Id, user.UserName!, user.Email!, roles);
 
             // read avatar claim from store, fallback to default
-            var claims = _userManager.GetClaimsAsync(user).Result;
+            var claims = _userManager.GetClaimsAsync(user).Result ?? Enumerable.Empty<Claim>();
             var avatarClaim = claims.FirstOrDefault(c => c.Type == "avatar_url")?.Value;
             result.AvatarUrl = !string.IsNullOrEmpty(avatarClaim) ? avatarClaim : DefaultAvatar;
 
@@ -101,7 +101,8 @@ namespace Blogzaur.Application.ApplicationUser
         {
             try
             {
-                return _userManager.GetRolesAsync(user).Result;
+                var roles = _userManager.GetRolesAsync(user).Result;
+                return roles ?? new List<string>();
             }
             catch
             {
