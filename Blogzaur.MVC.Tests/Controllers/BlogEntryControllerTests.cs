@@ -13,6 +13,8 @@ using Blogzaur.Application.BlogEntry.Queries.GetBlogEntryById;
 using Moq;
 using Blogzaur.Application.BlogEntry.Queries.GetAllBlogEntries;
 using Microsoft.AspNetCore.TestHost;
+using Blogzaur.Application.Category;
+using Blogzaur.Application.Category.Queries.GetAllCategories; 
 
 namespace Blogzaur.MVC.Controllers.Tests
 {
@@ -37,8 +39,13 @@ namespace Blogzaur.MVC.Controllers.Tests
 
             var mediatorMock = new Moq.Mock<MediatR.IMediator>();
             mediatorMock
-                .Setup(BlogEntryDto => BlogEntryDto.Send(Moq.It.IsAny<GetAllBlogEntriesQuery>(), Moq.It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(Moq.It.IsAny<GetAllBlogEntriesQuery>(), Moq.It.IsAny<CancellationToken>()))
                 .ReturnsAsync(blogEntries);
+
+            // the controller also calls GetAllCategories() inside List -> ensure mediator returns a non-null list
+            mediatorMock
+                .Setup(m => m.Send(Moq.It.IsAny<GetAllCategoriesQuery>(), Moq.It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<CategoryDto>());
 
             var client = _factory.WithWebHostBuilder(builder =>
                 builder.ConfigureTestServices(services => services.AddScoped(_ => mediatorMock.Object))).CreateClient();
@@ -66,8 +73,13 @@ namespace Blogzaur.MVC.Controllers.Tests
 
             var mediatorMock = new Moq.Mock<MediatR.IMediator>();
             mediatorMock
-                .Setup(BlogEntryDto => BlogEntryDto.Send(Moq.It.IsAny<GetAllBlogEntriesQuery>(), Moq.It.IsAny<CancellationToken>()))
+                .Setup(m => m.Send(Moq.It.IsAny<GetAllBlogEntriesQuery>(), Moq.It.IsAny<CancellationToken>()))
                 .ReturnsAsync(blogEntries);
+
+            // ensure GetAllCategoriesQuery also returns a non-null list to avoid NRE in controller
+            mediatorMock
+                .Setup(m => m.Send(Moq.It.IsAny<GetAllCategoriesQuery>(), Moq.It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<CategoryDto>());
 
             var client = _factory.WithWebHostBuilder(builder =>
                 builder.ConfigureTestServices(services => services.AddScoped(_ => mediatorMock.Object))).CreateClient();
